@@ -11,7 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
         integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
@@ -20,28 +20,44 @@
 </head>
 
 <body class="bg-light">
-    <nav>
-        <div class="container">
-            <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-                <a href="/eweekend"
-                    class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-                    <svg class="bi me-2" width="40" height="32">
-                        <use xlink:href="#bootstrap"></use>
-                    </svg>
-                    <span class="fs-4">E-Weekend 5.0</span>
-                </a>
+    <nav class="navbar navbar-expand-lg navbar-light py-1 bg-white">
+        <div class="container-md py-2">
+            <a class="navbar-brand" href="index.html">
+                <img src="https://res.cloudinary.com/dgsfmwhyk/image/upload/v1644660642/Black_JU_E-cell_logo_ounjqc.png"
+                    alt="" width="250" height="65">
 
-                <ul class="nav nav-pills">
-                    <li class="nav-item"><a href="/eweekend" class="nav-link" aria-current="page">Home</a></li>
-                    <li class="nav-item"><a href="/eweekend/#events" class="nav-link">Events</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
-                    <!-- <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">About</a></li> -->
-                    <!-- <div class="col-md-3 text-end">
-                        <button type="button" class="btn btn-primary">Register Now</button>
-                    </div> -->
+            </a>
+            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                <!-- Cross Symbol for Closing Navbar -->
+                <span></span>
+                <span></span>
+
+            </button>
+            <div class="navbar-collapse justify-content-center collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-2 mb-lg-0  fw-bold">
+                    <li class="nav-item">
+                        <a class="nav-link" style="color: black; margin-left :30em;
+                    margin-right : 1em;" aria-current="page" href="index.html">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#events" id="navbarDropdown" role="button" aria-expanded="false"
+                            style="color: black; margin-left : 1em;
+                margin-right : 2em;">
+                            Events
+                        </a>
+                    </li>
+
+
                 </ul>
-            </header>
+
+                <a href="https://portal.juecell.in/" target="blank"><button
+                        class="btn me-2 text-light fw-bold bg-primary" style="border-radius: 25px;margin-left : em;"
+                        type="button">Register Now</button></a>
+            </div>
         </div>
     </nav>
 
@@ -159,11 +175,11 @@
 
     <main>
         <!-- First hero starts -->
-        <div class="container col-xxl-12 px-4 py-2">
-            <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-                <div class="col-10 col-sm-8 col-lg-6">
-                    <img src="https://eweekend.juecell.in/wp-content/uploads/2022/01/Corporate-Devs-logo.png"
-                        class="d-block mx-lg-auto" alt="Bootstrap Themes" height="500" loading="lazy">
+        <div class="container col-xxl-12 px-4 py-5">
+            <div class="row flex-lg-row-reverse justify-content-center py-3">
+                <div class="col-10 col-sm-12 col-lg-6">
+                    <img src="https://res.cloudinary.com/dgsfmwhyk/image/upload/v1644660642/Corporate_Devs_logo_zln7yh.png"
+                        class="d-block mx-lg-auto" alt="Bootstrap Themes" width="200">
                 </div>
                 <div class="col-lg-6">
                     <h1 class="display-2 fw-bold lh-1 mb-3">Cruise Through <span class="text-primary">Corporate
@@ -188,7 +204,8 @@
 
         <!-- Rounds -->
         <div class="container px-4 py-5" id="featured-3">
-            <h2 class="pb-2 border-bottom">Rounds</h2>
+            <h2 style="text-align: center;font-size: 50px;" class="pb-2 border-bottom"><span
+                    class="text-primary fw-bold">Rounds</span></h2>
             <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
                 <div class="feature col">
                     <div class="feature-icon bg-primary bg-gradient">
@@ -200,7 +217,9 @@
                     <p>The aptitude test with questions involving consultancy, logos, data interpretation and logical
                         reasoning. Top 30 participants from this round will then qualify for the second round.
                     </p>
-                    <p>23 Feb</p>
+                    <p><svg class="bi me-2" width="1em" height="1em">
+                            <use xlink:href="#calendar3" />
+                        </svg>23 Feb</p>
                     <!-- <a href="#" class="btn btn-primary"> Add to Calendar </a> -->
                     <!-- <a href="#" class="icon-link">
                   Call to action
@@ -216,12 +235,14 @@
                         </svg>
                     </div>
                     <h2>Case Study</h2>
-                    <p>The top 30 participants will be sorted into 10 teams of 3 members each, who
-                        will be presented with a case study. Pitch your solution in front of a
-                        panel of judges.
-                        Top 3 teams will be chosen for the final round.
+                    <p><svg class="bi me-2" width="1em" height="1em">
+                            <use xlink:href="#calendar3" />
+                        </svg>26 Feb</p>
+                    <p>The top 30 participants will be sorted into 10 teams of 3 members each, who will be presented
+                        with a case study. Pitch your solution in front of a panel of judges. Top 3 teams will be chosen
+                        for the final round.
                     </p>
-                    <p>26 Feb</p>
+
                     <!-- <a href="#" class="btn btn-primary"> Add to Calendar </a> -->
                     <!-- <a href="#" class="icon-link">
                   Call to action
@@ -237,10 +258,13 @@
                         </svg>
                     </div>
                     <h2>The CEO Challenge</h2>
+                    <p><svg class="bi me-2" width="1em" height="1em">
+                            <use xlink:href="#calendar3" />
+                        </svg>27 Feb</p>
                     <p>The finalists get to wear the CEO’s hat for a company in a fictitious scenario and make decisions
                         and formulate a strategy and pitch it in front of the jury.
                     </p>
-                    <p>27 Feb</p>
+
                     <!-- <a href="#" class="btn btn-primary"> Add to Calendar </a> -->
                     <!-- <a href="#" class="icon-link">
                   Call to action
@@ -279,7 +303,8 @@
                     </svg>
                     <div>
                         <h2 class="fw-bold mb-0">Chance to pitch <span class="text-primary">offline
-                                <span class="text-dark">infront of</span> Industry Experts </span></h2>
+                                <span class="text-dark">infront of</span> Industry Experts </span>
+                        </h2>
                         <!-- <p>The students of this generation demand the learning support that is appropriate for their situation and context. JU E-Cell brings you various courses worth up to 10k to help you enhance those skills you have always wanted to master. So don't let this opportunity slide!</p> -->
                     </div>
                 </div>
@@ -293,8 +318,8 @@
         <div class="row align-items-center g-lg-5 py-5">
             <div class="col-lg-7 text-center text-lg-start">
                 <h1 class="display-4 fw-bold lh-1 mb-3">FAQs</h1>
-                <p class="col-lg-10 fs-4">Here are some frequently asked questions. Nonetheless, LaunchX will be a once
-                    in a lifetime experience! </p>
+                <p class="col-lg-10 fs-4">Here are some frequently asked questions. Nonetheless, Corporate Devs will be
+                    a once in a lifetime experience! </p>
             </div>
             <div class="col-md-10 mx-auto col-lg-5">
                 <div class="accordion" id="accordionExample">
@@ -302,13 +327,17 @@
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                What are the minimum and maximum members of a team?
+                                Is this a group event?
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                3-5 members per team
+                                No and Yes. Corporate Devs is a unique event where you start off alone, then form a
+                                team, and finally fight off alone as a lone ranger. That didn't clarify things. The
+                                first round of Corporate Devs is an individual round. Post this, you will be divided
+                                into teams by us. The teams which qualify this round will move forward to the final
+                                round which is an individual round too.
                             </div>
                         </div>
                     </div>
@@ -316,13 +345,17 @@
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Can groups be formed across colleges?
+                                I don't know about case studies, what should I do?
                             </button>
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                Yes , cross-college groups can be formed.
+                                No one in their first year knows about case studies, you are no different. Bootcamps and
+                                sessions will be organised to introduce you to the world of Case Studies. If you still
+                                face any problems, the entire team of JU E-Cell will be present to help you
+                                out and solve any queries you might. You enter Corporate Devs without knowing case
+                                studies, you exit being a pro.
                             </div>
                         </div>
                     </div>
@@ -330,14 +363,16 @@
                         <h2 class="accordion-header" id="headingThree">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                What is the registration fee for the event?
+                                The last round is a situation round? What's that?
                             </button>
                         </h2>
                         <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                Teams consisting of only Jadavpur University students don’t have to pay any amount.
-                                Cross-college and other college teams will have to pay Rs 100 per team.
+                                This is where your creativity will be put to test. You will be given a hypothetical
+                                situation which will be revealed on the day of the final itself. You have to come up
+                                with a creative solution or answer to the situation. More details before the final
+                                round itself.
                             </div>
                         </div>
                     </div>
@@ -345,13 +380,16 @@
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                Can you change your teammates between the sub-events?
+                                Will I have to pitch offline? I am scared of public speaking.
                             </button>
                         </h2>
                         <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                No. Changing teammates will lead to disqualification of the respective team.
+                                Yes! All your seniors in JU E-Cell were afraid of public speaking in their first year.
+                                But, the advantage of events such as Corporate Devs is that even if you aren’t good at
+                                pitching, you can practice without the fear of judgement. Every great public
+                                speaker starts with a first pitch. Let this be your first pitch of thousands to come.
                             </div>
                         </div>
                     </div>
@@ -410,7 +448,23 @@
             </div>
         </div>
     </div>
+    <!-- First hero starts -->
 
+    <div class="px-4 py-5 my-5 text-center" id="cu">
+        <!-- <img class="d-block mx-auto mb-4" src="../assets/images/blue_grad_logo.png" alt="" height="57"> -->
+        <!-- <div class="py-5"></div> -->
+        <h1 class="display-5 fw-bold">Ping us at <span class="text-primary">eweekend<span
+                    class="text-warning">@</span>juecell.in</span>.
+        </h1>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">Stay tuned for more updates.</p>
+            <!-- <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                  <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Pre-Register Now</button>
+                  <button type="button" class="btn btn-outline-secondary btn-lg px-4">Explore</button>
+              </div> -->
+        </div>
+    </div>
+    <!-- First hero ends -->
     <div class="container">
         <footer class="py-5">
             <div class="d-flex justify-content-between py-4 my-4 border-top">
