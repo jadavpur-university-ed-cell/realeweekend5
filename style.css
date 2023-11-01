@@ -380,6 +380,13 @@ section:nth-child(2n + 1) {
 .single-timeline-area .single-timeline-content:focus .timeline-text h6 {
   color: #3f43fd;
 }
+@media screen and (max-width:360px) {
+  #piling {
+    width: 50vh;
+    height: 50vh;
+  }
+  
+}
 
 /* timeline */
 /* 
