@@ -1,38 +1,56 @@
+// components/Login.tsx
 'use client';
 
 import { useState, useEffect, FormEvent } from 'react';
+import { useRouter } from 'next/navigation'; // Import router
 import { Eye, EyeOff, CheckCircle } from 'lucide-react';
 
 export default function Login() {
+  const router = useRouter(); // Initialize router
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
-
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(''); // New state for errors
   const [isValid, setIsValid] = useState(false);
 
-  // Real-time validation
   useEffect(() => {
     const { email, password } = formData;
-    const allFieldsFilled = email.trim() !== '' && password !== '';
-    
-    // valid if filled and not already submitted
-    setIsValid(allFieldsFilled && !isSubmitted);
+    setIsValid(email.trim() !== '' && password !== '' && !isSubmitted);
   }, [formData, isSubmitted]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setErrorMessage(''); // Clear error when typing
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (isValid) {
-      // Login API logic here
-      console.log('Login Attempt:', formData);
-      setIsSubmitted(true);
+    if (!isValid) return;
+
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setIsSubmitted(true);
+        // Redirect after short delay
+        setTimeout(() => {
+          router.push('/dashboard');
+          router.refresh(); // Refresh to update navbar state
+        }, 1500);
+      } else {
+        setErrorMessage(data.error || 'Login failed');
+      }
+    } catch (error) {
+      setErrorMessage('Something went wrong. Please try again.');
     }
   };
 
@@ -41,7 +59,6 @@ export default function Login() {
       className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat p-4 relative"
       style={{ backgroundImage: "url('/bg/board.png')" }}
     >
-      {/* Background Overlay with Blur */}
       <div className="absolute inset-0 bg-black/30 backdrop-blur-md z-0"></div>
 
       <div className="w-full max-w-md bg-[#026b6d]/80 backdrop-blur-xl rounded-lg shadow-2xl p-8 relative z-10 border border-white/20">
@@ -57,6 +74,14 @@ export default function Login() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {/* Error Message Display */}
+            {errorMessage && (
+              <div className="bg-red-500/20 border border-red-500 text-red-100 p-3 rounded text-sm text-center">
+                {errorMessage}
+              </div>
+            )}
+
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-100 mb-1 shadow-sm">Email</label>
@@ -100,18 +125,12 @@ export default function Login() {
                   : 'bg-gray-500/50 cursor-not-allowed text-gray-300'
               }`}
             >
-              {isSubmitted ? 'Verifying...' : 'Login'}
+              Login
             </button>
             
             <div className="text-center mt-4">
               <a href="#" className="text-sm text-teal-100 hover:text-white hover:underline transition-colors">
                 Forgot Password?
-              </a>
-            </div>
-            <div className="text-center mt-4 text-sm text-teal-100 hover:text-white transition-colors">
-                Not Registered Yet? &nbsp;
-              <a href="/register" className="text-sm text-teal-100 hover:text-white hover:underline transition-colors">
-                Register
               </a>
             </div>
           </form>

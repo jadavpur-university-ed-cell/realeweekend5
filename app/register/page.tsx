@@ -2,6 +2,7 @@
 
 import { useState, useEffect, FormEvent } from 'react';
 import { Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const DEPARTMENTS = [
     // --- Arts (13) ---
@@ -48,6 +49,7 @@ const DEPARTMENTS = [
 ];
 
 export default function Register() {
+    const router = useRouter(); 
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -82,11 +84,36 @@ export default function Register() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         if (isValid) {
-            console.log('Form Submitted:', formData);
-            setIsSubmitted(true);
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: formData.name,
+                        email: formData.email,
+                        rollNumber: formData.rollNumber,
+                        department: formData.department,
+                        password: formData.password
+                    }),
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    setIsSubmitted(true);
+                    setTimeout(() => {
+                        router.push('/dashboard');
+                        router.refresh(); // Refresh to update navbar state
+                    }, 1500);
+                } else {
+                    alert(data.error); // Show error from backend (e.g. "User already exists")
+                }
+            } catch (error) {
+                console.error("An unexpected error occurred", error);
+            }
         }
     };
 
@@ -113,7 +140,7 @@ export default function Register() {
                     <div className="text-center py-10 space-y-4">
                         <CheckCircle className="w-16 h-16 text-green-300 mx-auto" />
                         <p className="text-xl font-semibold text-white">Registration Complete!</p>
-                        <p className="text-gray-200">Your details have been recorded.</p>
+                        <p className="text-gray-200">Redirecting to dashboard...</p>
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -201,8 +228,8 @@ export default function Register() {
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
                                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 bg-white/95 ${formData.confirmPassword && formData.password !== formData.confirmPassword
-                                        ? 'border-red-500 focus:ring-red-500'
-                                        : 'border-gray-300'
+                                    ? 'border-red-500 focus:ring-red-500'
+                                    : 'border-gray-300'
                                     }`}
                                 placeholder="Re-enter password"
                             />
@@ -216,8 +243,8 @@ export default function Register() {
                             type="submit"
                             disabled={!isValid}
                             className={`w-full py-2.5 px-4 rounded-md font-bold text-white transition-all duration-200 shadow-lg ${isValid
-                                    ? 'bg-blue-600 hover:bg-blue-500 hover:scale-[1.02]'
-                                    : 'bg-gray-500/50 cursor-not-allowed text-gray-300'
+                                ? 'bg-blue-600 hover:bg-blue-500 hover:scale-[1.02]'
+                                : 'bg-gray-500/50 cursor-not-allowed text-gray-300'
                                 }`}
                         >
                             {isSubmitted ? 'Submitted' : 'Register'}
