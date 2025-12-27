@@ -55,7 +55,7 @@ export default function Login() {
   };
 
   return (
-    <div 
+    <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat p-4 relative"
       style={{ backgroundImage: "url('/bg/board.png')" }}
     >
@@ -74,7 +74,7 @@ export default function Login() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
-            
+
             {/* Error Message Display */}
             {errorMessage && (
               <div className="bg-red-500/20 border border-red-500 text-red-100 p-3 rounded text-sm text-center">
@@ -119,18 +119,23 @@ export default function Login() {
             <button
               type="submit"
               disabled={!isValid}
-              className={`w-full py-2.5 px-4 rounded-md font-bold text-white transition-all duration-200 shadow-lg ${
-                isValid 
-                  ? 'bg-blue-600 hover:bg-blue-500 hover:scale-[1.02]' 
+              className={`w-full py-2.5 px-4 rounded-md font-bold text-white transition-all duration-200 shadow-lg ${isValid
+                  ? 'bg-blue-600 hover:bg-blue-500 hover:scale-[1.02]'
                   : 'bg-gray-500/50 cursor-not-allowed text-gray-300'
-              }`}
+                }`}
             >
               Login
             </button>
-            
+
             <div className="text-center mt-4">
               <a href="#" className="text-sm text-teal-100 hover:text-white hover:underline transition-colors">
                 Forgot Password?
+              </a>
+            </div>
+            <div className="text-center mt-4 text-sm text-teal-100 hover:text-white transition-colors">
+              Not Yet Registered? &nbsp;
+              <a href="/register" className="text-sm text-teal-100 hover:text-white hover:underline transition-colors">
+                Register
               </a>
             </div>
           </form>
