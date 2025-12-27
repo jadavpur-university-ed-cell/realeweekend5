@@ -12,6 +12,8 @@ import {
   Float,
 } from "@react-three/drei";
 import Image from "next/image";
+import { useLoader } from "@react-three/fiber";
+import { TextureLoader } from "three";
 
 /**
  * STATE MANAGEMENT
@@ -22,7 +24,7 @@ const GameContext = createContext<{
   setActiveCorner: (idx: number | null) => void;
 }>({
   activeCorner: 0,
-  setActiveCorner: () => {},
+  setActiveCorner: () => { },
 });
 
 const GameProvider = ({ children }: { children: React.ReactNode }) => {
@@ -57,7 +59,7 @@ const GameController = () => {
   const scroll = useScroll();
   const tokenRef = useRef<THREE.Group>(null!);
   const { setActiveCorner } = useContext(GameContext);
-  
+
   // Keep track of last index to avoid unnecessary re-renders
   const lastFound = useRef<number | null>(0);
 
@@ -72,7 +74,7 @@ const GameController = () => {
     // 1. Movement Logic
     const point = curve.getPointAt(t);
     const tangent = curve.getTangentAt(t);
-    
+
     if (tokenRef.current) {
       tokenRef.current.position.lerp(point, 0.1);
       const lookAtPos = point.clone().add(tangent);
@@ -81,19 +83,19 @@ const GameController = () => {
 
     // 2. Camera Logic
     // We maintain the same offset used in initial calculation
-    const isoOffset = new THREE.Vector3(20, 20, 20); 
+    const isoOffset = new THREE.Vector3(20, 20, 20);
     const camPos = point.clone().add(isoOffset);
-    
+
     // Lerp camera for smooth tracking
     state.camera.position.lerp(camPos, 0.05);
     state.camera.lookAt(point);
 
     // 3. Corner Detection Logic
-    const threshold = 0.05; 
+    const threshold = 0.05;
     let found = null;
 
     // 0.0 = Start; 0.25 = C1; 0.5 = C2; 0.75 = C3; ~1.0 = Start
-    if (t < 0.05) found = 0; 
+    if (t < 0.05) found = 0;
     else if (Math.abs(t - 0.25) < threshold) found = 1;
     else if (Math.abs(t - 0.50) < threshold) found = 2;
     else if (Math.abs(t - 0.75) < threshold) found = 3;
@@ -101,8 +103,8 @@ const GameController = () => {
 
     // Update Context only if changed
     if (found !== lastFound.current) {
-        lastFound.current = found;
-        setActiveCorner(found);
+      lastFound.current = found;
+      setActiveCorner(found);
     }
   });
 
@@ -110,12 +112,12 @@ const GameController = () => {
     <group ref={tokenRef} position={PATH_POINTS[0]}>
       <Float speed={5} rotationIntensity={0.2} floatIntensity={0.5}>
         <mesh position={[0, 0.75, 0]} castShadow receiveShadow>
-             <cylinderGeometry args={[0, 1, 3, 4]} />
-             <meshStandardMaterial color="#00ff00" roughness={0.3} />
+          <cylinderGeometry args={[0, 1, 3, 4]} />
+          <meshStandardMaterial color="#00ff00" roughness={0.3} />
         </mesh>
         <mesh position={[0, 1.8, 0]} castShadow receiveShadow>
-             <sphereGeometry args={[0.6]} />
-             <meshStandardMaterial color="white" />
+          <sphereGeometry args={[0.6]} />
+          <meshStandardMaterial color="white" />
         </mesh>
       </Float>
     </group>
@@ -126,12 +128,9 @@ const GameController = () => {
  * COMPONENT: 2D UI Overlay (Outside Canvas)
  * This ensures modals stay fixed on screen and don't move with the board.
  */
-/**
- * COMPONENT: 2D UI Overlay (Fixed for Mobile & Ghosting)
- */
 const UIOverlay = () => {
   const { activeCorner } = useContext(GameContext);
-  
+
   // LOGIC FIX: Prevent "Register" modal from flashing when scrolling between corners.
   // We memorize the last valid corner data. If activeCorner is null (scrolling),
   // we keep showing the old data while it fades out.
@@ -139,7 +138,7 @@ const UIOverlay = () => {
   if (activeCorner !== null) {
     lastValidIndex.current = activeCorner;
   }
-  
+
   const data = CORNER_CONTENT[lastValidIndex.current];
   const isVisible = activeCorner !== null;
 
@@ -150,25 +149,30 @@ const UIOverlay = () => {
       case "HERO":
         return (
           // RESPONSIVE FIX: w-[90vw] for mobile, max-w-3xl for desktop
-          <div className="w-[90vw] max-w-3xl text-center pointer-events-auto p-4">
-            <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-green-300 mb-2 drop-shadow-lg">
-              {data.title}
-            </h1>
+          <div className="w-[90vw] max-w-3xl flex flex-col items-center text-center pointer-events-auto p-4">
+            <Image
+              src="/logo/logo.png"
+              height={100}
+              width={500}
+              alt="Logo"
+              className="mb-6"
+              priority
+            />
+            <p className="text-lgl md:text-3xl text-gray-300 font-bold mb-8">{data.subtitle}</p>
             <p className="text-lg md:text-2xl text-white font-light mb-2">{data.date}</p>
-            <p className="text-sm md:text-base text-gray-300 mb-8">{data.subtitle}</p>
             <button className="px-6 py-2 md:px-8 md:py-3 bg-green-500 hover:bg-green-600 text-black font-bold rounded-full text-base md:text-lg transition-transform hover:scale-105 shadow-lg shadow-green-500/50 cursor-pointer">
               {data.buttonText}
             </button>
-            <div className="mt-8 md:mt-12 animate-bounce text-white/50 text-xs md:text-sm pointer-events-none">
+            {/* <div className="mt-8 md:mt-12 animate-bounce text-white/50 text-xs md:text-sm pointer-events-none">
               ↓ Scroll to Explore ↓
-            </div>
+            </div> */}
           </div>
         );
 
       case "CAROUSEL":
         return (
           // RESPONSIVE FIX: w-full on mobile, fixed width on desktop
-          <div className="w-[90vw] md:w-[30rem] pointer-events-auto">
+          <div className="w-[90vw] md:w-[40rem] h-[50vh] pointer-events-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 border-b border-white/20 pb-4">
               {data.title}
             </h2>
@@ -177,7 +181,7 @@ const UIOverlay = () => {
               {data.items?.map((item: any, i: number) => (
                 <div
                   key={i}
-                  className="min-w-[200px] md:min-w-[220px] bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/10 snap-center hover:bg-white/20 transition-colors"
+                  className="min-w-[200px] md:min-w-[220px] h-[40vh] bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/10 snap-center hover:bg-white/20 transition-colors"
                 >
                   <h3 className="text-lg md:text-xl font-bold text-green-400 mb-2">
                     {item.name}
@@ -239,15 +243,14 @@ const UIOverlay = () => {
   return (
     <div
       // CENTERED POSITIONING (No full screen cover)
-      className={`fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out ${
-        isVisible
-          ? "opacity-100 scale-100"
-          : "opacity-0 scale-95 pointer-events-none"
-      }`}
+      className={`fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out ${isVisible
+        ? "opacity-100 scale-100"
+        : "opacity-0 scale-95 pointer-events-none"
+        }`}
     >
       {/* Background container for the modal content */}
-      <div className="bg-[#014d4e]/90 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 p-4 md:p-8">
-         {renderContent()}
+      <div className="bg-[#014d4e]/50 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 p-4">
+        {renderContent()}
       </div>
     </div>
   );
@@ -257,6 +260,8 @@ const UIOverlay = () => {
  * COMPONENT: The Board Environment
  */
 const Board = () => {
+  const centerTexture = useLoader(TextureLoader, "/board/center.png");
+
   const tiles: React.ReactNode[] = [];
   const tilesPerSide = Math.floor(BOARD_DATA.length / 4);
 
@@ -272,10 +277,10 @@ const Board = () => {
     const z = THREE.MathUtils.lerp(start.z, end.z, alpha);
 
     let rotationY = 0;
-    if (sideIndex === 0) rotationY = 0;           
-    else if (sideIndex === 1) rotationY = 0; 
-    else if (sideIndex === 2) rotationY = -Math.PI;   
-    else if (sideIndex === 3) rotationY = Math.PI / 2;  
+    if (sideIndex === 0) rotationY = 0;
+    else if (sideIndex === 1) rotationY = 0;
+    else if (sideIndex === 2) rotationY = -Math.PI;
+    else if (sideIndex === 3) rotationY = Math.PI / 2;
 
     tiles.push(
       <Tile
@@ -290,18 +295,19 @@ const Board = () => {
   return (
     <group>
       {tiles}
+
+      {/* Base Dark Floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
         <planeGeometry args={[BOARD_SIZE * 1.8, BOARD_SIZE * 1.8]} />
         <meshStandardMaterial color="#026b6d" />
       </mesh>
-      <Text
-        position={[0, 0.1, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        fontSize={3}
-        color="#013d3e"
-      >
-        E-WEEKEND
-      </Text>
+
+      {/* REPLACED TEXT WITH IMAGE PLANE */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.1, 0]}>
+        {/* Adjust size args={[15, 15]} as needed */}
+        <planeGeometry args={[20, 20]} />
+        <meshBasicMaterial map={centerTexture} toneMapped={false} />
+      </mesh>
     </group>
   )
 }
@@ -309,12 +315,12 @@ const Board = () => {
 const Tile = ({ position, rotationY, data }: { position: [number, number, number], rotationY: number, data: any }) => {
   const isCorner = data.type === "CORNER";
   // Flip text if on bottom side
-  const isOppositeSide = Math.abs(rotationY) > 2; 
+  const isOppositeSide = Math.abs(rotationY) > 2;
 
   return (
     <group position={position} rotation={[0, rotationY, 0]}>
       <RoundedBox args={[3.8, 0.5, 3.8]} radius={0.1} smoothness={4} receiveShadow>
-        <meshStandardMaterial color={isCorner ? "#d1d5db" : "#e8ecdb"} />
+        <meshStandardMaterial color={isCorner ? "#ffffff" : "#ffffff"} />
       </RoundedBox>
 
       {!isCorner && data.type !== "CHANCE" && (
@@ -365,21 +371,21 @@ const BOARD_DATA = [
   { id: "t4", name: "Gamma Three", type: "PROPERTY", color: "#87CEEB" },
   { id: "t5", name: "Delta Four", type: "PROPERTY", color: "#87CEEB" },
   // Side 2
-  { id: "jail", name: "JAIL", type: "CORNER", color: "#C0C0C0" },
+  { id: "events", name: "Events", type: "CORNER", color: "#FFFFFF" },
   { id: "t6", name: "Epsilon", type: "PROPERTY", color: "#FF007F" },
   { id: "t7", name: "Electric Co", type: "UTILITY", color: "#FFFFFF" },
   { id: "t8", name: "Zeta Six", type: "PROPERTY", color: "#FF007F" },
   { id: "t9", name: "Eta Seven", type: "PROPERTY", color: "#FFA500" },
   { id: "t10", name: "Theta Eight", type: "PROPERTY", color: "#FFA500" },
   // Side 3
-  { id: "park", name: "FREE PARKING", type: "CORNER", color: "#C0C0C0" },
+  { id: "timeline", name: "Timeline", type: "CORNER", color: "#FFFFFF" },
   { id: "t11", name: "Iota Nine", type: "PROPERTY", color: "#FF0000" },
   { id: "t12", name: "Kappa Ten", type: "PROPERTY", color: "#FF0000" },
   { id: "t13", name: "Chest", type: "CHANCE", color: "#FFFFFF" },
   { id: "t14", name: "Lambda 11", type: "PROPERTY", color: "#FFFF00" },
   { id: "t15", name: "Mu 12", type: "PROPERTY", color: "#FFFF00" },
   // Side 4
-  { id: "goto", name: "GO TO JAIL", type: "CORNER", color: "#C0C0C0" },
+  { id: "past", name: "PAST MOMENTS", type: "CORNER", color: "#ffffff" },
   { id: "t16", name: "Nu 13", type: "PROPERTY", color: "#008000" },
   { id: "t17", name: "Xi 14", type: "PROPERTY", color: "#008000" },
   { id: "t18", name: "Chest", type: "CHANCE", color: "#FFFFFF" },
@@ -392,14 +398,15 @@ const CORNER_CONTENT = [
     id: "welcome",
     type: "HERO",
     title: "E-WEEKEND 2025",
-    date: "Feb 14-16, 2025",
-    subtitle: "The Largest Entrepreneurship Summit",
+    subtitle: "Jadavpur University Entrepreneurship Cell Presents the Greatest Weekend Business Event",
+    src: "/logo/logo.png",
+    date: "Jan 10-11, 2026",
     buttonText: "Register Now",
   },
   {
     id: "events",
     type: "CAROUSEL",
-    title: "FLAGSHIP EVENTS",
+    title: "EVENTS",
     items: [
       { name: "Technokraft", desc: "even I don't know what happens here" },
       { name: "Pitchgenix", desc: "Pitch your idea to top VCs" },
@@ -421,7 +428,7 @@ const CORNER_CONTENT = [
     id: "gallery",
     type: "GALLERY",
     title: "PAST HIGHLIGHTS",
-    images: [] 
+    images: []
   }
 ];
 
@@ -432,48 +439,56 @@ const CORNER_CONTENT = [
 export default function MonopolyPage() {
   return (
     <GameProvider>
-        <div className="h-screen w-full flex items-center justify-center bg-[#014d4e] overflow-hidden">
-            {/* 2D UI Layer (Fixed) */}
-            <UIOverlay />
+      <div className="h-screen w-full flex items-center justify-center bg-[#014d4e] overflow-hidden">
+        {/* 2D UI Layer (Fixed) */}
+        <UIOverlay />
 
-            <div className="absolute top-10 left-180 right-0 z-10 text-center pointer-events-none">
-                <Image src = {"/logo/logo.png"} height={100} width={100} alt = {'Logo'} />
-            </div>
+        {/* <div className="absolute top-0 left-0 w-full flex justify-center pt-6 md:pt-10 z-10 pointer-events-none">
+          {/* Your Image Component Here - Add responsive sizing to the image if needed 
+          <Image
+            src="/logo/logo.png"
+            height={100}
+            width={100}
+            alt="Logo"
+            className="w-24 md:w-32 h-auto object-contain" // Makes image responsive
+          />
+        </div> 
+        */}
 
-            <Canvas shadows dpr={[1, 2]}>
-                {/* 
+        <Canvas shadows dpr={[1, 2]}>
+          {/* 
                   CRITICAL FIX: 
                   Initial position set to [8, 20, 8].
                   This is exactly PATH_POINTS[0] + [20,20,20].
                   The view will be perfectly centered on the GO block on load.
                 */}
-                <OrthographicCamera makeDefault position={INITIAL_CAM_POS} zoom={65} near={-50} far={200} />
+          <OrthographicCamera makeDefault position={INITIAL_CAM_POS} zoom={65} near={-50} far={200} />
 
-                <ambientLight intensity={0.7} />
-                <directionalLight
-                    position={[-10, 10, 5]}
-                    intensity={1.2}
-                    castShadow
-                    shadow-mapSize={[2048, 2048]}
-                    shadow-camera-left={-50}
-                    shadow-camera-right={50}
-                    shadow-camera-top={50}
-                    shadow-camera-bottom={-50}
-                    shadow-bias={-0.00001}
-                />
+          <ambientLight intensity={0.7} />
+          <directionalLight
+            position={[-10, 10, 5]}
+            intensity={1.2}
+            castShadow
+            shadow-mapSize={[2048, 2048]}
+            shadow-camera-left={-50}
+            shadow-camera-right={50}
+            shadow-camera-top={50}
+            shadow-camera-bottom={-50}
+            shadow-bias={-0.00001}
+          />
 
-                <ScrollControls pages={6} damping={0.2}>
-                    <Board />
-                    <GameController />
-                </ScrollControls>
-            </Canvas>
+          <ScrollControls pages={6} damping={0.2}>
+            <Board />
+            <GameController />
+          </ScrollControls>
+        </Canvas>
 
-            <style jsx global>{`
+        <style jsx global>{`
                 body { margin: 0; background: #014d4e; }
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
             `}</style>
-        </div>
+      </div>
     </GameProvider>
   );
 }
