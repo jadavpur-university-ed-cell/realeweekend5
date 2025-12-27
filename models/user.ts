@@ -29,7 +29,7 @@ const UserSchema = new Schema(
     // The Array of Events
     eventsRegistered: {
       type: [String],
-      enum: ["Technokraft", "Pitchgenix", "Data Binge", "Corporate Devs"],
+      enum: ["Technokraft", "PitchGenix", "Data Binge", "Corporate Devs"],
       default: [], // Starts empty
     },
     // Role based access

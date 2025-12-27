@@ -15,6 +15,7 @@ import Image from "next/image";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import Link from "next/link";
+import { EVENTS_DATA } from '@/assets/eventData';
 
 /**
  * STATE MANAGEMENT
@@ -173,24 +174,67 @@ const UIOverlay = () => {
 
             case "CAROUSEL":
                 return (
-                    // RESPONSIVE FIX: w-full on mobile, fixed width on desktop
-                    <div className="w-[90vw] md:w-[40rem] h-[50vh] pointer-events-auto">
+                    <div className="w-[90vw] md:w-[40rem] min-h-44vh pointer-events-auto">
                         <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 border-b border-white/20 pb-4">
                             {data.title}
                         </h2>
-                        {/* Added touch-pan-x for better mobile scrolling */}
+
+                        {/* Carousel Container */}
                         <div className="flex gap-4 overflow-x-auto pb-4 snap-x no-scrollbar touch-pan-x">
-                            {data.items?.map((item: any, i: number) => (
-                                <div
-                                    key={i}
-                                    className="min-w-[200px] md:min-w-[220px] h-[40vh] bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/10 snap-center hover:bg-white/20 transition-colors"
-                                >
-                                    <h3 className="text-lg md:text-xl font-bold text-green-400 mb-2">
-                                        {item.name}
-                                    </h3>
-                                    <p className="text-xs md:text-sm text-gray-300">{item.desc}</p>
-                                </div>
-                            ))}
+                            {data.items?.map((item: any, i: number) => {
+                                // 1. Lookup the detailed data using the item name
+                                // We check for exact match or case-insensitive match just in case
+                                const eventDetails = EVENTS_DATA[item.name as keyof typeof EVENTS_DATA] ||
+                                    Object.values(EVENTS_DATA).find(e => e.description.includes(item.name));
+
+                                // Fallback if data isn't found
+                                if (!eventDetails) return null;
+
+                                return (
+                                    <div
+                                        key={i}
+                                        className={`min-w-65 md:min-w-75 max-h-100 flex flex-col justify-between 
+                                backdrop-blur-md p-6 rounded-xl border border-white/10 snap-center 
+                                transition-all hover:bg-white/5 relative overflow-hidden group`}
+                                    >
+                                        {/* Dynamic colored accent bar at the top */}
+                                        <div className={`absolute top-0 left-0 w-full h-1 ${eventDetails.color || 'bg-white'}`} />
+
+                                        <div>
+                                            {/* Logo & Title */}
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <div className="w-12 h-12 relative rounded-full overflow-hidden bg-black/20 shrink-0">
+                                                    <img
+                                                        src={eventDetails.logo}
+                                                        alt={item.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
+                                                <h3 className="text-xl font-bold text-white leading-tight">
+                                                    {item.name}
+                                                </h3>
+                                            </div>
+
+                                            {/* Description */}
+                                            <p className="text-sm text-gray-300 line-clamp-4 leading-relaxed">
+                                                {eventDetails.description}
+                                            </p>
+                                        </div>
+
+                                        {/* Register Button */}
+                                        <div className="mt-4">
+                                            <Link
+                                                href="/events"
+                                                className={`w-full py-2.5 px-4 rounded-lg flex items-center justify-center 
+                                        font-semibold text-sm text-white transition-transform active:scale-95
+                                        ${eventDetails.color || 'bg-blue-600'} hover:opacity-90`}
+                                            >
+                                                Go to Events Page
+                                            </Link>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 );
@@ -230,8 +274,16 @@ const UIOverlay = () => {
                             {[1, 2, 3].map((i) => (
                                 <div
                                     key={i}
-                                    className="w-full md:w-24 h-32 md:h-24 bg-gray-700/50 rounded-lg animate-pulse border border-white/10"
-                                ></div>
+                                    className="relative w-full md:w-48 h-48 bg-gray-700/50 rounded-lg overflow-hidden border border-white/10"
+                                >
+                                    <Image
+                                        src={`/past/${i}.png`}
+                                        alt={`Past photo ${i}`}
+                                        fill 
+                                        className="object-cover" 
+                                        sizes="(max-width: 768px) 100vw, 200px" 
+                                    />
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -364,35 +416,38 @@ const Tile = ({ position, rotationY, data }: { position: [number, number, number
 
 
 // --- DATA DEFINITIONS ---
-const BOARD_DATA = [
-    // Side 1
+export const BOARD_DATA = [
+    // --- Side 1 (The Beginning) ---
     { id: "start", name: "GO", type: "CORNER", color: "#C0C0C0" },
-    { id: "t1", name: "Alpha One", type: "PROPERTY", color: "#8B4513" },
-    { id: "t2", name: "Beta Two", type: "PROPERTY", color: "#8B4513" },
-    { id: "t3", name: "Chance", type: "CHANCE", color: "#FFFFFF" },
-    { id: "t4", name: "Gamma Three", type: "PROPERTY", color: "#87CEEB" },
-    { id: "t5", name: "Delta Four", type: "PROPERTY", color: "#87CEEB" },
-    // Side 2
+    { id: "t1", name: "Garage Lane", type: "PROPERTY", color: "#8B4513" }, // Brown
+    { id: "t2", name: "Bootstrap Blvd", type: "PROPERTY", color: "#8B4513" }, // Brown
+    { id: "t3", name: "Angel Investor", type: "CHANCE", color: "#FFFFFF" },
+    { id: "t4", name: "Incubator Way", type: "PROPERTY", color: "#87CEEB" }, // Light Blue
+    { id: "t5", name: "Accelerator Ave", type: "PROPERTY", color: "#87CEEB" }, // Light Blue
+
+    // --- Side 2 (Growth Phase) ---
     { id: "events", name: "Events", type: "CORNER", color: "#FFFFFF" },
-    { id: "t6", name: "Epsilon", type: "PROPERTY", color: "#FF007F" },
-    { id: "t7", name: "Electric Co", type: "UTILITY", color: "#FFFFFF" },
-    { id: "t8", name: "Zeta Six", type: "PROPERTY", color: "#FF007F" },
-    { id: "t9", name: "Eta Seven", type: "PROPERTY", color: "#FFA500" },
-    { id: "t10", name: "Theta Eight", type: "PROPERTY", color: "#FFA500" },
-    // Side 3
+    { id: "t6", name: "Cyber City", type: "PROPERTY", color: "#FF007F" }, // Pink
+    { id: "t7", name: "Cloud Servers", type: "UTILITY", color: "#FFFFFF" },
+    { id: "t8", name: "AI District", type: "PROPERTY", color: "#FF007F" }, // Pink
+    { id: "t9", name: "Market Square", type: "PROPERTY", color: "#FFA500" }, // Orange
+    { id: "t10", name: "Trade Centre", type: "PROPERTY", color: "#FFA500" }, // Orange
+
+    // --- Side 3 (Prime Real Estate) ---
     { id: "timeline", name: "Timeline", type: "CORNER", color: "#FFFFFF" },
-    { id: "t11", name: "Iota Nine", type: "PROPERTY", color: "#FF0000" },
-    { id: "t12", name: "Kappa Ten", type: "PROPERTY", color: "#FF0000" },
-    { id: "t13", name: "Chest", type: "CHANCE", color: "#FFFFFF" },
-    { id: "t14", name: "Lambda 11", type: "PROPERTY", color: "#FFFF00" },
-    { id: "t15", name: "Mu 12", type: "PROPERTY", color: "#FFFF00" },
-    // Side 4
+    { id: "t11", name: "Central Park", type: "PROPERTY", color: "#FF0000" }, // Red
+    { id: "t12", name: "Times Square", type: "PROPERTY", color: "#FF0000" }, // Red
+    { id: "t13", name: "Community Chest", type: "CHANCE", color: "#FFFFFF" },
+    { id: "t14", name: "Startup Street", type: "PROPERTY", color: "#FFFF00" }, // Yellow
+    { id: "t15", name: "Venture Valley", type: "PROPERTY", color: "#FFFF00" }, // Yellow
+
+    // --- Side 4 (The Big League) ---
     { id: "past", name: "PAST MOMENTS", type: "CORNER", color: "#ffffff" },
-    { id: "t16", name: "Nu 13", type: "PROPERTY", color: "#008000" },
-    { id: "t17", name: "Xi 14", type: "PROPERTY", color: "#008000" },
-    { id: "t18", name: "Chest", type: "CHANCE", color: "#FFFFFF" },
-    { id: "t19", name: "Omicron 15", type: "PROPERTY", color: "#0000FF" },
-    { id: "t20", name: "Pi 16", type: "PROPERTY", color: "#0000FF" },
+    { id: "t16", name: "Unicorn Road", type: "PROPERTY", color: "#008000" }, // Green
+    { id: "t17", name: "IPO Avenue", type: "PROPERTY", color: "#008000" }, // Green
+    { id: "t18", name: "Market Crash", type: "CHANCE", color: "#FFFFFF" },
+    { id: "t19", name: "Founder's Villa", type: "PROPERTY", color: "#0000FF" }, // Dark Blue
+    { id: "t20", name: "Tech Titan Tower", type: "PROPERTY", color: "#0000FF" }, // Dark Blue
 ];
 
 const CORNER_CONTENT = [
