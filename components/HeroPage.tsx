@@ -17,9 +17,9 @@ import { TextureLoader } from "three";
 import Link from "next/link";
 import { EVENTS_DATA } from '@/assets/eventData';
 
+
 /**
  * STATE MANAGEMENT
- * Simple Context to share state between the 3D world and the 2D UI Overlay.
  */
 const GameContext = createContext<{
     activeCorner: number | null;
@@ -29,6 +29,7 @@ const GameContext = createContext<{
     setActiveCorner: () => { },
 });
 
+
 const GameProvider = ({ children }: { children: React.ReactNode }) => {
     const [activeCorner, setActiveCorner] = useState<number | null>(0);
     return (
@@ -37,6 +38,7 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
         </GameContext.Provider>
     );
 };
+
 
 /**
  * CONFIGURATION & DATA
@@ -50,9 +52,8 @@ const PATH_POINTS = [
     new THREE.Vector3(-BOARD_SIZE, 0, -BOARD_SIZE), // Loop back
 ];
 
-// Calculate precise initial camera position to center the "GO" block immediately
-// Start Point (-12, 0, -12) + Offset (20, 20, 20) = (8, 20, 8)
 const INITIAL_CAM_POS: [number, number, number] = [8, 20, 8];
+
 
 /**
  * COMPONENT: 3D Token & Camera Controller
@@ -61,8 +62,6 @@ const GameController = () => {
     const scroll = useScroll();
     const tokenRef = useRef<THREE.Group>(null!);
     const { setActiveCorner } = useContext(GameContext);
-
-    // Keep track of last index to avoid unnecessary re-renders
     const lastFound = useRef<number | null>(0);
 
     const curve = useMemo(
@@ -71,12 +70,9 @@ const GameController = () => {
     );
 
     useFrame((state) => {
-        // FIX: Clamp the offset between 0 and 1 strictly
-        // Sometimes scroll.offset can be 1.000001 or -0.000001 due to damping
         const rawT = scroll.offset;
         const t = Math.min(1, Math.max(0, rawT));
 
-        // Movement Logic (Now using the safe 't')
         const point = curve.getPointAt(t);
         const tangent = curve.getTangentAt(t);
 
@@ -86,13 +82,11 @@ const GameController = () => {
             tokenRef.current.lookAt(lookAtPos);
         }
 
-        // Camera Logic
         const isoOffset = new THREE.Vector3(20, 20, 20);
         const camPos = point.clone().add(isoOffset);
         state.camera.position.lerp(camPos, 0.05);
         state.camera.lookAt(point);
 
-        // Corner Detection Logic
         const threshold = 0.05;
         let found = null;
 
@@ -107,7 +101,6 @@ const GameController = () => {
             setActiveCorner(found);
         }
     });
-
 
     return (
         <group ref={tokenRef} position={PATH_POINTS[0]}>
@@ -125,17 +118,28 @@ const GameController = () => {
     );
 };
 
+
 /**
- * COMPONENT: 2D UI Overlay (Outside Canvas)
- * This ensures modals stay fixed on screen and don't move with the board.
+ * COMPONENT: Footer
+ */
+const Footer = () => (
+    <div className="w-full mt-4 pt-3 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-white/40 text-[10px] md:text-xs">
+        <span className="mb-1 md:mb-0">© 2025 E-Weekend.</span>
+        <div className="flex gap-3">
+            <span className="cursor-pointer hover:text-white transition-colors">Terms</span>
+            <span className="cursor-pointer hover:text-white transition-colors">Privacy</span>
+        </div>
+    </div>
+);
+
+
+/**
+ * COMPONENT: 2D UI Overlay
  */
 const UIOverlay = () => {
     const { activeCorner } = useContext(GameContext);
-
-    // LOGIC FIX: Prevent "Register" modal from flashing when scrolling between corners.
-    // We memorize the last valid corner data. If activeCorner is null (scrolling),
-    // we keep showing the old data while it fades out.
     const lastValidIndex = useRef<number>(0);
+
     if (activeCorner !== null) {
         lastValidIndex.current = activeCorner;
     }
@@ -146,11 +150,13 @@ const UIOverlay = () => {
     if (!data) return null;
 
     const renderContent = () => {
+        // Standardized container size
+        const standardSizeClass = "w-[90vw] max-w-3xl pointer-events-auto";
+
         switch (data.type) {
             case "HERO":
                 return (
-                    // RESPONSIVE FIX: w-[90vw] for mobile, max-w-3xl for desktop
-                    <div className="w-[90vw] max-w-3xl flex flex-col items-center text-center pointer-events-auto p-4">
+                    <div className={`${standardSizeClass} flex flex-col items-center text-center p-4`}>
                         <Image
                             src="/logo/logo.png"
                             height={100}
@@ -159,77 +165,70 @@ const UIOverlay = () => {
                             className="mb-6"
                             priority
                         />
-                        <p className="text-lgl md:text-3xl text-gray-300 font-bold mb-8">{data.subtitle}</p>
+                        <p className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-emerald-400">{data.subtitle}</p>
                         <p className="text-lg md:text-2xl text-white font-light mb-2">{data.date}</p>
                         <Link href={"/register"}>
                             <button className="px-6 py-2 md:px-8 md:py-3 bg-green-500 hover:bg-green-600 text-black font-bold rounded-full text-base md:text-lg transition-transform hover:scale-105 shadow-lg shadow-green-500/50 cursor-pointer">
                                 {data.buttonText}
                             </button>
-                            {/* <div className="mt-8 md:mt-12 animate-bounce text-white/50 text-xs md:text-sm pointer-events-none">
-              ↓ Scroll to Explore ↓
-              </div> */}
                         </Link>
                     </div>
                 );
 
             case "CAROUSEL":
                 return (
-                    <div className="w-[90vw] md:w-[40rem] min-h-44vh pointer-events-auto">
-                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 border-b border-white/20 pb-4">
+                    <div className={standardSizeClass}>
+                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-right text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-emerald-400">
                             {data.title}
                         </h2>
 
-                        {/* Carousel Container */}
-                        <div className="flex gap-4 overflow-x-auto pb-4 snap-x no-scrollbar touch-pan-x">
+                        {/* COMPACT Grid Container */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {data.items?.map((item: any, i: number) => {
-                                // 1. Lookup the detailed data using the item name
-                                // We check for exact match or case-insensitive match just in case
                                 const eventDetails = EVENTS_DATA[item.name as keyof typeof EVENTS_DATA] ||
                                     Object.values(EVENTS_DATA).find(e => e.description.includes(item.name));
 
-                                // Fallback if data isn't found
                                 if (!eventDetails) return null;
 
                                 return (
                                     <div
                                         key={i}
-                                        className={`min-w-65 md:min-w-75 max-h-100 flex flex-col justify-between 
-                                backdrop-blur-md p-6 rounded-xl border border-white/10 snap-center 
+                                        className={`w-full flex flex-col justify-between 
+                                backdrop-blur-md p-3 rounded-lg border border-white/10 
                                 transition-all hover:bg-white/5 relative overflow-hidden group`}
                                     >
-                                        {/* Dynamic colored accent bar at the top */}
                                         <div className={`absolute top-0 left-0 w-full h-1 ${eventDetails.color || 'bg-white'}`} />
 
                                         <div>
-                                            {/* Logo & Title */}
-                                            <div className="flex items-center gap-3 mb-4">
-                                                <div className="w-12 h-12 relative rounded-full overflow-hidden bg-black/20 shrink-0">
+                                            {/* Header - Compact */}
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <div className="w-23 h-11 relative rounded-lg overflow-hidden bg-black/20 shrink-0">
                                                     <img
                                                         src={eventDetails.logo}
                                                         alt={item.name}
                                                         className="w-full h-full object-cover"
                                                     />
                                                 </div>
-                                                <h3 className="text-xl font-bold text-white leading-tight">
+                                                <h2 className="text-lg md:text-xl font-bold mb-6 text-right text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-yellow-500">
                                                     {item.name}
-                                                </h3>
+                                                </h2>
                                             </div>
 
-                                            {/* Description */}
-                                            <p className="text-sm text-gray-300 line-clamp-4 leading-relaxed">
+                                            {/* Description - Compact */}
+                                            <p className="text-xs text-gray-300 line-clamp-2 leading-relaxed mb-3">
                                                 {eventDetails.description}
                                             </p>
                                         </div>
 
-                                        {/* Register Button */}
-                                        <div className="mt-4">
+                                        {/* Button - Compact */}
+                                        <div>
                                             <Link
                                                 href="/events"
-                                                className={`w-full py-2.5 px-4 rounded-lg flex items-center justify-center 
-                                        font-semibold text-sm text-white transition-transform active:scale-95
-                                        ${eventDetails.color || 'bg-blue-600'} hover:opacity-90`}
+                                                className={`w-full py-1.5 px-3 rounded text-center block
+                                    font-semibold text-xs text-white transition-transform active:scale-95
+                                    ${eventDetails.color || 'bg-blue-600'} hover:opacity-90`}
                                             >
-                                                Go to Events Page
+                                                View Details
                                             </Link>
                                         </div>
                                     </div>
@@ -241,10 +240,11 @@ const UIOverlay = () => {
 
             case "SCHEDULE":
                 return (
-                    <div className="w-[90vw] md:w-[25rem] pointer-events-auto">
-                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 text-right">
+                    <div className={standardSizeClass}>
+                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-right text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-emerald-400">
                             {data.title}
                         </h2>
+
                         <div className="space-y-4">
                             {data.schedule?.map((item: any, i: number) => (
                                 <div
@@ -265,23 +265,22 @@ const UIOverlay = () => {
 
             case "GALLERY":
                 return (
-                    <div className="w-[90vw] md:w-auto text-center pointer-events-auto">
-                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                    <div className={`${standardSizeClass} text-center`}>
+                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-right text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-emerald-400">
                             {data.title}
                         </h2>
-                        {/* RESPONSIVE FIX: 1 column on mobile, 3 on desktop */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {[1, 2, 3].map((i) => (
                                 <div
                                     key={i}
-                                    className="relative w-full md:w-48 h-48 bg-gray-700/50 rounded-lg overflow-hidden border border-white/10"
+                                    className="relative w-full h-48 bg-gray-700/50 rounded-lg overflow-hidden border border-white/10"
                                 >
                                     <Image
                                         src={`/past/${i}.png`}
                                         alt={`Past photo ${i}`}
-                                        fill 
-                                        className="object-cover" 
-                                        sizes="(max-width: 768px) 100vw, 200px" 
+                                        fill
+                                        className="object-cover"
+                                        sizes="(max-width: 768px) 100vw, 200px"
                                     />
                                 </div>
                             ))}
@@ -296,26 +295,24 @@ const UIOverlay = () => {
 
     return (
         <div
-            // CENTERED POSITIONING (No full screen cover)
             className={`fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out ${isVisible
                 ? "opacity-100 scale-100"
                 : "opacity-0 scale-95 pointer-events-none"
                 }`}
         >
-            {/* Background container for the modal content */}
-            <div className="bg-[#014d4e]/50 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 p-4">
+            <div className="bg-[#014d4e]/50 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 p-4 max-h-[90vh] overflow-y-auto no-scrollbar">
                 {renderContent()}
             </div>
         </div>
     );
 };
 
+
 /**
  * COMPONENT: The Board Environment
  */
 const Board = () => {
     const centerTexture = useLoader(TextureLoader, "/board/center.png");
-
     const tiles: React.ReactNode[] = [];
     const tilesPerSide = Math.floor(BOARD_DATA.length / 4);
 
@@ -323,10 +320,8 @@ const Board = () => {
         const sideIndex = Math.floor(index / tilesPerSide);
         const indexInSide = index % tilesPerSide;
         const alpha = indexInSide / tilesPerSide;
-
         const start = PATH_POINTS[sideIndex];
         const end = PATH_POINTS[(sideIndex + 1) % PATH_POINTS.length];
-
         const x = THREE.MathUtils.lerp(start.x, end.x, alpha);
         const z = THREE.MathUtils.lerp(start.z, end.z, alpha);
 
@@ -349,16 +344,11 @@ const Board = () => {
     return (
         <group>
             {tiles}
-
-            {/* Base Dark Floor */}
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
                 <planeGeometry args={[BOARD_SIZE * 1.8, BOARD_SIZE * 1.8]} />
                 <meshStandardMaterial color="#026b6d" />
             </mesh>
-
-            {/* REPLACED TEXT WITH IMAGE PLANE */}
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.1, 0]}>
-                {/* Adjust size args={[15, 15]} as needed */}
                 <planeGeometry args={[20, 20]} />
                 <meshBasicMaterial map={centerTexture} toneMapped={false} />
             </mesh>
@@ -366,9 +356,9 @@ const Board = () => {
     )
 }
 
+
 const Tile = ({ position, rotationY, data }: { position: [number, number, number], rotationY: number, data: any }) => {
     const isCorner = data.type === "CORNER";
-    // Flip text if on bottom side
     const isOppositeSide = Math.abs(rotationY) > 2;
 
     return (
@@ -417,38 +407,32 @@ const Tile = ({ position, rotationY, data }: { position: [number, number, number
 
 // --- DATA DEFINITIONS ---
 export const BOARD_DATA = [
-    // --- Side 1 (The Beginning) ---
     { id: "start", name: "GO", type: "CORNER", color: "#C0C0C0" },
-    { id: "t1", name: "Garage Lane", type: "PROPERTY", color: "#8B4513" }, // Brown
-    { id: "t2", name: "Bootstrap Blvd", type: "PROPERTY", color: "#8B4513" }, // Brown
+    { id: "t1", name: "Garage Lane", type: "PROPERTY", color: "#8B4513" },
+    { id: "t2", name: "Bootstrap Blvd", type: "PROPERTY", color: "#8B4513" },
     { id: "t3", name: "Angel Investor", type: "CHANCE", color: "#FFFFFF" },
-    { id: "t4", name: "Incubator Way", type: "PROPERTY", color: "#87CEEB" }, // Light Blue
-    { id: "t5", name: "Accelerator Ave", type: "PROPERTY", color: "#87CEEB" }, // Light Blue
-
-    // --- Side 2 (Growth Phase) ---
+    { id: "t4", name: "Incubator Way", type: "PROPERTY", color: "#87CEEB" },
+    { id: "t5", name: "Accelerator Ave", type: "PROPERTY", color: "#87CEEB" },
     { id: "events", name: "Events", type: "CORNER", color: "#FFFFFF" },
-    { id: "t6", name: "Cyber City", type: "PROPERTY", color: "#FF007F" }, // Pink
+    { id: "t6", name: "Cyber City", type: "PROPERTY", color: "#FF007F" },
     { id: "t7", name: "Cloud Servers", type: "UTILITY", color: "#FFFFFF" },
-    { id: "t8", name: "AI District", type: "PROPERTY", color: "#FF007F" }, // Pink
-    { id: "t9", name: "Market Square", type: "PROPERTY", color: "#FFA500" }, // Orange
-    { id: "t10", name: "Trade Centre", type: "PROPERTY", color: "#FFA500" }, // Orange
-
-    // --- Side 3 (Prime Real Estate) ---
+    { id: "t8", name: "AI District", type: "PROPERTY", color: "#FF007F" },
+    { id: "t9", name: "Market Square", type: "PROPERTY", color: "#FFA500" },
+    { id: "t10", name: "Trade Centre", type: "PROPERTY", color: "#FFA500" },
     { id: "timeline", name: "Timeline", type: "CORNER", color: "#FFFFFF" },
-    { id: "t11", name: "Central Park", type: "PROPERTY", color: "#FF0000" }, // Red
-    { id: "t12", name: "Times Square", type: "PROPERTY", color: "#FF0000" }, // Red
+    { id: "t11", name: "Central Park", type: "PROPERTY", color: "#FF0000" },
+    { id: "t12", name: "Times Square", type: "PROPERTY", color: "#FF0000" },
     { id: "t13", name: "Community Chest", type: "CHANCE", color: "#FFFFFF" },
-    { id: "t14", name: "Startup Street", type: "PROPERTY", color: "#FFFF00" }, // Yellow
-    { id: "t15", name: "Venture Valley", type: "PROPERTY", color: "#FFFF00" }, // Yellow
-
-    // --- Side 4 (The Big League) ---
+    { id: "t14", name: "Startup Street", type: "PROPERTY", color: "#FFFF00" },
+    { id: "t15", name: "Venture Valley", type: "PROPERTY", color: "#FFFF00" },
     { id: "past", name: "PAST MOMENTS", type: "CORNER", color: "#ffffff" },
-    { id: "t16", name: "Unicorn Road", type: "PROPERTY", color: "#008000" }, // Green
-    { id: "t17", name: "IPO Avenue", type: "PROPERTY", color: "#008000" }, // Green
+    { id: "t16", name: "Unicorn Road", type: "PROPERTY", color: "#008000" },
+    { id: "t17", name: "IPO Avenue", type: "PROPERTY", color: "#008000" },
     { id: "t18", name: "Market Crash", type: "CHANCE", color: "#FFFFFF" },
-    { id: "t19", name: "Founder's Villa", type: "PROPERTY", color: "#0000FF" }, // Dark Blue
-    { id: "t20", name: "Tech Titan Tower", type: "PROPERTY", color: "#0000FF" }, // Dark Blue
+    { id: "t19", name: "Founder's Villa", type: "PROPERTY", color: "#0000FF" },
+    { id: "t20", name: "Tech Titan Tower", type: "PROPERTY", color: "#0000FF" },
 ];
+
 
 const CORNER_CONTENT = [
     {
@@ -477,8 +461,10 @@ const CORNER_CONTENT = [
         title: "EVENT TIMELINE",
         schedule: [
             { time: "10th Jan: 10:30", event: "Technokraft" },
+            { time: "10th Jan: 14:00", event: "Break" },
             { time: "10th Jan: 14:30", event: "Pitchgenix" },
             { time: "11th Jan: 10:30", event: "Data Binge" },
+            { time: "11th Jan: 14:00", event: "Break" },
             { time: "11th Jan: 14:30", event: "Corporate Devs" },
         ]
     },
@@ -498,30 +484,9 @@ export default function MonopolyPage() {
     return (
         <GameProvider>
             <div className="h-screen w-full flex items-center justify-center bg-[#014d4e] overflow-hidden">
-                {/* 2D UI Layer (Fixed) */}
                 <UIOverlay />
-
-                {/* <div className="absolute top-0 left-0 w-full flex justify-center pt-6 md:pt-10 z-10 pointer-events-none">
-          {/* Your Image Component Here - Add responsive sizing to the image if needed 
-          <Image
-            src="/logo/logo.png"
-            height={100}
-            width={100}
-            alt="Logo"
-            className="w-24 md:w-32 h-auto object-contain" // Makes image responsive
-          />
-        </div> 
-        */}
-
                 <Canvas shadows dpr={[1, 2]}>
-                    {/* 
-                  CRITICAL FIX: 
-                  Initial position set to [8, 20, 8].
-                  This is exactly PATH_POINTS[0] + [20,20,20].
-                  The view will be perfectly centered on the GO block on load.
-                */}
                     <OrthographicCamera makeDefault position={INITIAL_CAM_POS} zoom={80} near={-50} far={200} />
-
                     <ambientLight intensity={0.7} />
                     <directionalLight
                         position={[-10, 10, 5]}
@@ -534,13 +499,11 @@ export default function MonopolyPage() {
                         shadow-camera-bottom={-50}
                         shadow-bias={-0.00001}
                     />
-
                     <ScrollControls pages={6} damping={0.2}>
                         <Board />
                         <GameController />
                     </ScrollControls>
                 </Canvas>
-
                 <style jsx global>{`
                 body { margin: 0; background: #014d4e; }
                 .no-scrollbar::-webkit-scrollbar { display: none; }
