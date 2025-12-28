@@ -113,7 +113,7 @@ export default function EventsPage() {
 
                     {/* Left: Info & Register */}
                     <div className="md:w-2/3 p-8 border-b md:border-b-0 md:border-r border-gray-200">
-                        <div className="flex items-center gap-4 mb-6">
+                        <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
                             <Image src={currentEvent.logo} height={100} width={300} alt={`${activeTab} logo`} className='rounded-xl' />
                             <div className="text-3xl font-bold text-gray-800">{activeTab}</div>
                         </div>
@@ -189,10 +189,11 @@ export default function EventsPage() {
                             {currentEvent.pocs.map((poc, i) => (
                                 <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                                     <p className="font-bold text-gray-900">{poc.name}</p>
-                                    <p className="text-xs text-teal-600 font-bold uppercase tracking-wide mb-2">{poc.role}</p>
+                                    {/* <p className="text-xs text-teal-600 font-bold uppercase tracking-wide mb-2">{poc.role}</p> */}
                                     <a
-                                        href={`tel:${poc.phone}`}
+                                        href={`https://api.whatsapp.com/send?phone=${poc.phone}`}
                                         className="text-sm text-gray-500 hover:text-blue-600 flex items-center gap-2"
+                                        target='_blank'
                                     >
                                         <Phone size={14} /> {poc.phone}
                                     </a>
