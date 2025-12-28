@@ -36,11 +36,9 @@ const Navbar = () => {
   const getLinkStyles = (isDashboard: boolean) => `
     block px-6 py-2 md:px-8 md:py-3 rounded-full border transition-all duration-300 font-semibold text-sm tracking-wide text-center whitespace-nowrap
     ${isDashboard
-    ${
-    isDashboard
       ? "bg-green-500/20 backdrop-blur-3xl border-green-400/60 text-white shadow-[0_0_25px_rgba(74,222,128,0.6)] hover:bg-green-500/30 hover:shadow-[0_0_35px_rgba(74,222,128,0.8)] hover:scale-105"
       : "bg-white/5 border-green-500/30 text-green-500 hover:bg-white/10 hover:border-green-500/50 hover:text-green-400 hover:scale-105"
-  }
+    }
   `;
 
   // Filter items for mobile logic
@@ -53,7 +51,7 @@ const Navbar = () => {
       <nav className={`
   bg - white / 5 backdrop - blur - md border border - white / 10 shadow - 2xl px - 3 py - 3
   transition - all duration - 300
-        ${ isMobileMenuOpen ? "rounded-3xl" : "rounded-full" }
+        ${isMobileMenuOpen ? "rounded-3xl" : "rounded-full"}
   md: min - w - [700px] md: rounded - full md: px - 4
     `}>
 
@@ -65,7 +63,7 @@ const Navbar = () => {
 
             {/* 1. Home (Always Visible) */}
             {homeItem && (
-              <Link href={homeItem.href} className={`flex - 1 ${ getLinkStyles(false) } `}>
+              <Link href={homeItem.href} className={`flex - 1 ${getLinkStyles(false)} `}>
                 {homeItem.name}
               </Link>
             )}
@@ -87,7 +85,7 @@ const Navbar = () => {
             </button>
 
             {/* 3. Auth (Always Visible) */}
-            <Link href={authItem.href} className={`flex - 1 ${ getLinkStyles(true) } `}>
+            <Link href={authItem.href} className={`flex - 1 ${getLinkStyles(true)} `}>
               {authItem.name}
             </Link>
           </div>
@@ -95,7 +93,7 @@ const Navbar = () => {
           {/* Collapsible Section (Middle Items) */}
           <div className={`
   flex - col gap - 3 mt - 4 overflow - hidden transition - all duration - 300
-            ${ isMobileMenuOpen ? "flex max-h-[500px] opacity-100 pb-2" : "max-h-0 opacity-0 hidden" }
+            ${isMobileMenuOpen ? "flex max-h-[500px] opacity-100 pb-2" : "max-h-0 opacity-0 hidden"}
   `}>
             {middleItems.map((item) => (
               <Link
