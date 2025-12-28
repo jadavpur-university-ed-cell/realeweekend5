@@ -131,7 +131,7 @@ export default function Register() {
       */}
             <div className="absolute inset-0 bg-black/30 backdrop-blur-md z-0"></div>
 
-            <div className="w-full max-w-md bg-[#026b6d]/80 backdrop-blur-xl rounded-lg shadow-2xl p-8 relative z-10 border border-white/20">
+            <div className="mt-30 w-full max-w-md bg-[#026b6d]/80 backdrop-blur-xl rounded-lg shadow-2xl p-8 relative z-10 border border-white/20">
                 <h2 className="text-2xl font-bold text-center mb-6 text-white drop-shadow-md">
                     Student Registration
                 </h2>

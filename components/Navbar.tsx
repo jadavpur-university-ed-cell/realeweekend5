@@ -1,15 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const res = await fetch('/api/me');
+        if (res.ok) {
+          const data = await res.json();
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (e) {
+        setIsLoggedIn(false);
+      }
+    }
+    fetchUser();
+  }, []);
+
+
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Events", href: "/events" },
     { name: "Timeline", href: "/timeline" },
     { name: "Gallery", href: "/gallery" },
-    { name: "Dashboard", href: "/dashboard" },
+    { name: isLoggedIn ? "Dashboard" : "Register", href: isLoggedIn ? "/dashboard" : "/register" },
   ];
 
   return (
