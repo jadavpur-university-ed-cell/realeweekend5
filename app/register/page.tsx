@@ -104,10 +104,7 @@ export default function Register() {
 
                 if (res.ok) {
                     setIsSubmitted(true);
-                    setTimeout(() => {
-                        router.push('/dashboard');
-                        router.refresh(); // Refresh to update navbar state
-                    }, 1500);
+                    router.push('/dashboard');
                 } else {
                     alert(data.error); // Show error from backend (e.g. "User already exists")
                 }

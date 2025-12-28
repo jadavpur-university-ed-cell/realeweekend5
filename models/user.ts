@@ -9,13 +9,13 @@ const UserSchema = new Schema(
     email: {
       type: String,
       required: [true, "Email is required"],
-      unique: true, // Ensures no duplicate emails
+      unique: true, 
       match: [/.+@.+\..+/, "Please enter a valid email address"],
     },
     rollNumber: {
       type: String,
       required: [true, "Roll Number is required"],
-      unique: true, // Ensures no duplicate roll numbers
+      unique: true, 
     },
     department: {
       type: String,
@@ -24,13 +24,19 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
-      select: false, // Prevents password from returning in queries by default
+      select: false, 
     },
     // The Array of Events
     eventsRegistered: {
       type: [String],
       enum: ["Technokraft", "PitchGenix", "Data Binge", "Corporate Devs"],
-      default: [], // Starts empty
+      default: [], 
+    },
+    // --- ADDED THIS FIELD ---
+    teamId: {
+      type: Schema.Types.ObjectId,
+      ref: "Team", // Must match the model name string in Team.ts
+      default: null,
     },
     // Role based access
     role: {
@@ -40,11 +46,17 @@ const UserSchema = new Schema(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
+    timestamps: true,
+    strictPopulate: false // Optional: Helps avoid errors if schema is slightly out of sync
   }
 );
 
-// Prevent compiling the model multiple times in Next.js
+// CRITICAL FIX for Next.js hot-reloading:
+// If the model exists but the schema has changed, delete it so it recompiles with the new field.
+if (mongoose.models.User) {
+  delete mongoose.models.User;
+}
+
 const User = models.User || model("User", UserSchema);
 
 export default User;
