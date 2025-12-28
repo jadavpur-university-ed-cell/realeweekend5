@@ -6,8 +6,10 @@ export const metadata: Metadata = {
     "Discover a plethora of exciting events at E-Weekend 9.0 by JU E-Cell.",
 };
 
-export default function EventLayout({ children }: { children: React.ReactNode }) {
-  return ( 
-  {children}
+export default function EventsLayout({ children, }: {  children: React.ReactNode; }) {
+  return (
+    <>
+      {children}
+    </>
   );
 }
