@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 export default function Website() {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <MonopolyPage />
     </>
   )
