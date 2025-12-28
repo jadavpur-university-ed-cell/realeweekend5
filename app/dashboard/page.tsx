@@ -44,5 +44,5 @@ export default async function DashboardPage() {
 
   // 5. Default: Render User Dashboard
   return <UserDashboard userData={currentUser} />;
->>>>>>> cce98d3 (Move Navbar from global layout to page.tsx)
+
 }
