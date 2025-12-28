@@ -1,3 +1,4 @@
+
 // app/events/page.tsx
 'use client';
 
@@ -113,7 +114,7 @@ export default function EventsPage() {
                     {/* Left: Info & Register */}
                     <div className="md:w-2/3 p-8 border-b md:border-b-0 md:border-r border-gray-200">
                         <div className="flex items-center gap-4 mb-6">
-                            <Image src = {currentEvent.logo} height={100} width={300} alt = {`${activeTab} logo`} className='rounded-xl' />
+                            <Image src={currentEvent.logo} height={100} width={300} alt={`${activeTab} logo`} className='rounded-xl' />
                             <div className="text-3xl font-bold text-gray-800">{activeTab}</div>
                         </div>
 

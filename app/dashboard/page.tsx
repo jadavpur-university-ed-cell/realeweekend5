@@ -26,11 +26,11 @@ export default async function DashboardPage() {
   // 4. Role-based Rendering
   // Check if role is 'admin' (ensure your DB schema has this field)
   if (currentUser.role === 'admin') {
-    
+
     // FETCH ALL DATA for Admin View
     // We lean uses .lean() to get plain JS objects which are better for passing to client components
     const allUsers = await User.find({}).sort({ createdAt: -1 }).lean();
-    
+
     // Convert _id to string to avoid serialization warnings
     const serializedUsers = allUsers.map((u: any) => ({
       ...u,
@@ -44,4 +44,5 @@ export default async function DashboardPage() {
 
   // 5. Default: Render User Dashboard
   return <UserDashboard userData={currentUser} />;
+>>>>>>> cce98d3 (Move Navbar from global layout to page.tsx)
 }
