@@ -439,7 +439,7 @@ const CORNER_CONTENT = [
         id: "welcome",
         type: "HERO",
         title: "E-WEEKEND 2025",
-        subtitle: "Jadavpur University Entrepreneurship Cell Presents the Greatest Weekend Business Event",
+        subtitle: "Jadavpur University E-Cell Presents the Ultimate Freshers Entrepreneurship Experience",
         src: "/logo/logo.png",
         date: "Jan 10-11, 2026",
         buttonText: "Register Now",
