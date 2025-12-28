@@ -64,7 +64,7 @@ export default function AdminDashboard({ allUsers }: { allUsers: any[] }) {
             }}
         >
             <div className="min-h-screen bg-transparent/50 backdrop-blur-lg p-4 md:p-8">
-                <div className="max-w-7xl mx-auto space-y-6">
+                <div className="max-w-7xl mx-auto space-y-6 mt-20">
                     {/* Header with Search and Download */}
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>

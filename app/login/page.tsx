@@ -42,10 +42,7 @@ export default function Login() {
       if (res.ok) {
         setIsSubmitted(true);
         // Redirect after short delay
-        setTimeout(() => {
-          router.push('/dashboard');
-          router.refresh(); // Refresh to update navbar state
-        }, 1500);
+        router.push('/dashboard');
       } else {
         setErrorMessage(data.error || 'Login failed');
       }
