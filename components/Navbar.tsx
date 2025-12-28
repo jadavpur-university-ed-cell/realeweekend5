@@ -36,7 +36,7 @@ const Navbar = () => {
   const getLinkStyles = (isDashboard: boolean) => `
     block px-6 py-2 md:px-8 md:py-3 rounded-full border transition-all duration-300 font-semibold text-sm tracking-wide text-center whitespace-nowrap
     ${isDashboard
-      ? "bg-white/20 backdrop-blur-xl border-white/40 text-white shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:bg-white/30 hover:shadow-[0_0_25px_rgba(255,255,255,0.5)] hover:scale-105"
+      ? "bg-white/20 backdrop-blur-3xl border-white/50 text-white shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:bg-white/30 hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] hover:scale-105"
       : "bg-white/5 border-white/10 text-green-500 hover:bg-white/10 hover:border-white/30 hover:text-green-400 hover:scale-105"
     }
   `;
