@@ -11,8 +11,66 @@ export const EVENTS_DATA = {
             { name: 'Dipayan Sardar', phone: '9733817692' },
         ],
         faqs: [
-            { q: "Is it a team event?", a: "Yes, teams of 2-4 members." },
-            { q: "Do we need a prototype?", a: "A prototype is recommended but not mandatory for Round 1." }
+            {
+                q: "What is PitchGenix?",
+                a: "PitchGenix is a premier startup pitching competition under E-Weekend ’25. It provides a high-stakes platform for aspiring entrepreneurs to present their original business ideas to a panel of investors, venture capitalists, and industry experts, challenging them to prove their idea's uniqueness and market potential.",
+            },
+            {
+                q: "Who can participate?",
+                a: "The event is exclusively open to all 1st-year students from any discipline of Jadavpur University. This event is ideal for students interested in entrepreneurship, product management, venture capital, and business strategy who want to test their ability to turn an idea into a viable business pitch.",
+            },
+            {
+                q: "What is the format of the competition?",
+                a: "The competition is divided into two stages: Preliminary Round (Digital Pitch Deck submission) where teams submit a presentation of their original business idea, and Grand Finale (Live Pitching session) where shortlisted teams present their ideas in person to the judges.",
+            },
+            {
+                q: "What are the rules for Team Formation?",
+                a: "Participants must form their own teams. Each team must consist of a minimum of 2 members and a maximum of 4 members.",
+            },
+            {
+                q: "What is the format and deadline for the Preliminary Round?",
+                a: "Teams must prepare a Pitch Deck consisting of a maximum of 8 slides (including the introduction and conclusion). The submission must be completed by 7th January, 11:59 PM.",
+            },
+            {
+                q: "When is the Final Round?",
+                a: "The Grand Finale will take place on 10th January, starting from 10:30 AM onwards.",
+            },
+            {
+                q: "Are working prototypes or MVPs required?",
+                a: "Not compulsory but if your team has any prototype, it’s a plus. Mainly, A well-thought-out idea with logical reasoning is sufficient.",
+            },
+            {
+                q: "What is the format of the Final Round?",
+                a: "Each shortlisted team will have a total of 7 minutes on stage: 4 minutes for the Pitch (Presentation) and 3 minutes for the Rebuttal/Q&A session with the judges.",
+            },
+            {
+                q: "Are we allowed to use AI tools for our presentation?",
+                a: "Yes, the use of AI tools (such as pitch deck generators or AI-assisted research) is allowed. However, it is not recommended, as judges value original analysis, personal creativity, and a deep, authentic understanding of the business model.",
+            },
+            {
+                q: "What should be the focus of our original idea?",
+                a: "Your idea should address a real-world problem with a unique solution. Judges will look for innovation, scalability, a clear revenue model, and your ability to convince them why your startup would succeed in the current market.",
+            },
+            {
+                q: "What skills are evaluated in PitchGenix?",
+                a: "Strategic Thinking & Innovation, Market Research & Analysis, Financial Feasibility, Public Speaking & Persuasion, and Ability to handle pressure during Q&A.",
+            },
+            {
+                q: "What skills does PitchGenix help develop?",
+                a: "PitchGenix helps participants build entrepreneurial thinking, problem-solving ability, business storytelling, market and user understanding, and confidence in pitching ideas.",
+            },
+            {
+                q: "How will teams be judged?",
+                a: "Teams will be evaluated based on Problem Identification & Solution Fit, Market Analysis & Competitor Research, Strategy & Revenue Model, and Clarity, Confidence, and Quality of the Pitch.",
+            },
+            {
+                q: "Who should participate in PitchGenix?",
+                a: "PitchGenix is for everyone who dares to think differently. If you are someone who is curious about entrepreneurship, dreams of becoming a new-generation entrepreneur/innovator, feels different from the crowd, and wants to create and lead.",
+            },
+            {
+                q: "What will participants gain from PitchGenix?",
+                a: "Participants gain real pitching experience, feedback from experienced judges, exposure to startup thinking, certificates and recognition, and a strong foundation for future E-Cell events.",
+            },
         ]
     },
     'Corporate Devs': {
