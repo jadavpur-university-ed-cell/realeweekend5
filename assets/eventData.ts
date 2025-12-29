@@ -201,8 +201,58 @@ export const EVENTS_DATA = {
             { name: 'Karan Prasad', phone: '9163039213' },
         ],
         faqs: [
-            { q: "Do I need Python knowledge?", a: "Basic Python/R or Excel skills are sufficient." },
-            { q: "Is it individual?", a: "No, this is a team event consisting of 4 members in a team." }
+            {
+                "q": "What is Data Binge?",
+                "a": "Data Binge is a data analytics and visualization competition under E-Weekend '25. It is designed to introduce freshers to the world of data by challenging them to analyze datasets, uncover patterns, and present meaningful insights through logical reasoning and visualization."
+            },
+            {
+                "q": "Who can participate?",
+                "a": "The event is exclusively open to all 1st-year students from any discipline of Jadavpur University. No prior experience in data science is required, just curiosity and a willingness to learn. (Having knowledge of Microsoft Excel or Python is a plus)"
+            },
+            {
+                "q": "What is the format of the competition?",
+                "a": "The competition consists of two stages: Preliminary Round (Quiz): Online quiz testing basic knowledge of Data Analytics and Entrepreneurship in General. Final Round: Live analysis of data, interpretation, and presentation of insights."
+            },
+            {
+                "q": "Is Data Binge an individual or team event?",
+                "a": "Participants have to appear in the quiz individually, after which top performing teams will be grouped in teams of 4 for the final round."
+            },
+            {
+                "q": "Do we need prior knowledge of data science or coding?",
+                "a": "No prior expertise is mandatory. Basic understanding of numbers, logic, and graphs is sufficient. The event focuses more on thinking, interpretation, and insight rather than advanced technical skills."
+            },
+            {
+                "q": "What tools are allowed for analysis and visualization?",
+                "a": "Participants may use tools such as Excel, Google Sheets, Power BI, Tableau, Python, or any other data visualization/analysis tools of their choice."
+            },
+            {
+                "q": "What happens in the Final Round?",
+                "a": "Shortlisted teams will present their findings live. This includes explaining trends, insights, assumptions, and answering questions from the judges."
+            },
+            {
+                "q": "Are AI tools allowed during the competition?",
+                "a": "Yes, AI tools may be used for assistance. However, originality, understanding, and clarity of insights will be prioritized over automated outputs."
+            },
+            {
+                "q": "What kind of datasets can we expect?",
+                "a": "Datasets will be real-world inspired and may relate to business, social trends, consumer behavior, public data, or everyday scenarios."
+            },
+            {
+                "q": "What skills are evaluated in Data Binge?",
+                "a": "Evaluation will be mainly based on: Analytical Thinking, Data Interpretation, Visualization & Storytelling, Logical Reasoning, and Clarity of Explanation."
+            },
+            {
+                "q": "What skills does Data Binge help develop?",
+                "a": "Data Binge helps participants build: Data literacy, critical thinking, problem-solving ability, storytelling with data, and confidence in presenting insights."
+            },
+            {
+                "q": "How will teams be judged?",
+                "a": "Teams will be evaluated based on: Accuracy of Analysis, Quality of Insights, Effectiveness of Visualizations, and Clarity and Confidence in Presentation."
+            },
+            {
+                "q": "Who should participate in Data Binge?",
+                "a": "Data Binge is for anyone who: Is curious about data and patterns, Enjoys problem-solving and logic, or Wants to explore analytics, consulting, or tech roles."
+            }
         ]
     }
 };
