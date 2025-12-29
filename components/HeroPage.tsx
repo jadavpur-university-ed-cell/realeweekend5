@@ -182,8 +182,8 @@ const UIOverlay = () => {
                             {data.title}
                         </h2>
 
-                        {/* COMPACT Grid Container */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {/* RESPONSIVE Container: Horizontal Scroll (Mobile) -> Grid (Desktop) */}
+                        <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-4 md:pb-0 md:grid md:grid-cols-2 md:gap-3 md:overflow-visible scrollbar-hide">
                             {data.items?.map((item: any, i: number) => {
                                 const eventDetails = EVENTS_DATA[item.name as keyof typeof EVENTS_DATA] ||
                                     Object.values(EVENTS_DATA).find(e => e.description.includes(item.name));
@@ -193,9 +193,12 @@ const UIOverlay = () => {
                                 return (
                                     <div
                                         key={i}
-                                        className={`w-full flex flex-col justify-between 
+                                        className={`
+                                min-w-[85%] md:min-w-0 snap-center md:snap-align-none
+                                w-full flex flex-col justify-between 
                                 backdrop-blur-md p-3 rounded-lg border border-white/10 
-                                transition-all hover:bg-white/5 relative overflow-hidden group`}
+                                transition-all hover:bg-white/5 relative overflow-hidden group
+                            `}
                                     >
                                         <div className={`absolute top-0 left-0 w-full h-1 ${eventDetails.color || 'bg-white'}`} />
 
