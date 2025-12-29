@@ -245,37 +245,45 @@ export default function AdminDashboard({ allUsers, allTeams = [] }: AdminDashboa
                                     </thead>
                                     <tbody className="divide-y divide-gray-200">
                                         {filteredTeams.length > 0 ? (
-                                            filteredTeams.map((team, i) => (
-                                                <tr key={team._id || i} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="px-6 py-4 font-bold text-gray-900">{team.name}</td>
-                                                    <td className="px-6 py-4 font-mono text-xs text-purple-600 bg-purple-50 rounded w-fit px-2">
-                                                        {team.teamCode}
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex flex-col">
-                                                            <span className="font-medium text-gray-900 flex items-center gap-1">
-                                                                <ShieldCheck size={14} className="text-green-600" />
-                                                                {team.leader?.name || 'Unknown'}
-                                                            </span>
-                                                            <span className="text-xs text-gray-500">{team.leader?.email}</span>
-                                                            <span className="text-xs text-gray-400">{team.leader?.rollNumber}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex flex-col gap-2">
-                                                            {team.members?.length > 0 ? team.members.map((m: any, idx: number) => (
-                                                                <div key={idx} className="flex flex-col text-xs">
-                                                                    <span className="text-gray-700 font-medium">{m.name}</span>
-                                                                    <span className="text-gray-500">{m.email}</span>
-                                                                </div>
-                                                            )) : <span className="text-gray-400 italic">No members</span>}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 text-gray-500">
-                                                        {1 + (team.members?.length || 0)} / 4
-                                                    </td>
-                                                </tr>
-                                            ))
+                                            filteredTeams.map((team, i) => {
+                                                // Calculate Size correctly
+                                                const memberIds = team.members?.map((m: any) => m._id || m.id) || [];
+                                                const leaderId = team.leader?._id || team.leader?.id;
+                                                const isLeaderInMembers = memberIds.includes(leaderId);
+                                                const teamSize = (team.members?.length || 0) + (isLeaderInMembers ? 0 : 1);
+
+                                                return (
+                                                    <tr key={team._id || i} className="hover:bg-gray-50 transition-colors">
+                                                        <td className="px-6 py-4 font-bold text-gray-900">{team.name}</td>
+                                                        <td className="px-6 py-4 font-mono text-xs text-purple-600 bg-purple-50 rounded w-fit px-2">
+                                                            {team.teamCode}
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex flex-col">
+                                                                <span className="font-medium text-gray-900 flex items-center gap-1">
+                                                                    <ShieldCheck size={14} className="text-green-600" />
+                                                                    {team.leader?.name || 'Unknown'}
+                                                                </span>
+                                                                <span className="text-xs text-gray-500">{team.leader?.email}</span>
+                                                                <span className="text-xs text-gray-400">{team.leader?.rollNumber}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex flex-col gap-2">
+                                                                {team.members?.length > 0 ? team.members.map((m: any, idx: number) => (
+                                                                    <div key={idx} className="flex flex-col text-xs">
+                                                                        <span className="text-gray-700 font-medium">{m.name}</span>
+                                                                        <span className="text-gray-500">{m.email}</span>
+                                                                    </div>
+                                                                )) : <span className="text-gray-400 italic">No members</span>}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-gray-500">
+                                                            {teamSize} / 4
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
                                         ) : (
                                             <tr>
                                                 <td colSpan={5} className="px-6 py-12 text-center text-gray-400">

@@ -49,7 +49,7 @@ export default function QuizDashboard() {
         if (examsRes.ok) {
            const examsData = await examsRes.json();
            setExams(examsData);
-           console.log("Exams", examsData);
+          //  console.log("Exams", examsData);
         }
 
       } catch (error) {
