@@ -149,7 +149,7 @@ export default function Register() {
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 bg-white/95"
+                                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 bg-white/95"
                                 placeholder="Enter your full name"
                             />
                         </div>
@@ -162,7 +162,7 @@ export default function Register() {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 bg-white/95"
+                                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 bg-white/95"
                                 placeholder="student@college.edu"
                             />
                         </div>
@@ -175,7 +175,7 @@ export default function Register() {
                                 name="rollNumber"
                                 value={formData.rollNumber}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 bg-white/95"
+                                className="w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 bg-white/95"
                                 placeholder="e.g., 002510011234"
                             />
                         </div>
@@ -187,7 +187,7 @@ export default function Register() {
                                 name="department"
                                 value={formData.department}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 bg-white/95"
+                                className="w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 bg-white/95"
                             >
                                 <option value="">Select Department</option>
                                 {DEPARTMENTS.map((dept, index) => (
@@ -204,7 +204,7 @@ export default function Register() {
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 pr-10 bg-white/95"
+                                className="w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 pr-10 bg-white/95"
                                 placeholder="Create password"
                             />
                             <button
@@ -224,7 +224,7 @@ export default function Register() {
                                 name="confirmPassword"
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
-                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 bg-white/95 ${formData.confirmPassword && formData.password !== formData.confirmPassword
+                                className={`w-full px-3 py-2 text-black border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300 bg-white/95 ${formData.confirmPassword && formData.password !== formData.confirmPassword
                                     ? 'border-red-500 focus:ring-red-500'
                                     : 'border-gray-300'
                                     }`}
