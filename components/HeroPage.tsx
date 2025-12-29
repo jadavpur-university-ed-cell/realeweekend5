@@ -266,14 +266,72 @@ const UIOverlay = () => {
                     </div>
                 );
 
-            case "GALLERY":
+            case "GALLERY": {
+                const slides = [1, 2, 3]
+                const scrollerId = "past-gallery-scroller"
+
+                const scrollTo = (i: number) => {
+                    const el = document.querySelector<HTMLDivElement>(
+                        `#${scrollerId} [data-slide="${i}"]`
+                    )
+                    el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
+                }
+
                 return (
                     <div className={`${standardSizeClass} text-center`}>
                         <h2 className="text-3xl md:text-4xl font-bold mb-6 text-right text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-emerald-400">
                             {data.title}
                         </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {[1, 2, 3].map((i) => (
+
+                        {/* Mobile: carousel */}
+                        <div className="md:hidden">
+                            <div
+                                id={scrollerId}
+                                className="
+            flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth
+            px-1 pb-3
+            [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
+          "
+                            >
+                                {slides.map((i) => (
+                                    <div
+                                        key={i}
+                                        data-slide={i}
+                                        className="
+                relative snap-center shrink-0
+                w-[85%] h-56
+                bg-gray-700/50 rounded-lg overflow-hidden border border-white/10
+              "
+                                    >
+                                        <Image
+                                            src={`/past/${i}.png`}
+                                            alt={`Past photo ${i}`}
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 768px) 85vw, 200px"
+                                            priority={i === 1}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Dots */}
+                            <div className="flex justify-center gap-2 mt-2">
+                                {slides.map((i, idx) => (
+                                    <button
+                                        key={i}
+                                        type="button"
+                                        aria-label={`Go to slide ${idx + 1}`}
+                                        onClick={() => scrollTo(i)}
+                                        className="h-2 w-2 rounded-full bg-white/30 hover:bg-white/60"
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Desktop+: grid */}
+                        <div className="hidden md:grid grid-cols-3 gap-4">
+                            {slides.map((i) => (
                                 <div
                                     key={i}
                                     className="relative w-full h-48 bg-gray-700/50 rounded-lg overflow-hidden border border-white/10"
@@ -283,13 +341,14 @@ const UIOverlay = () => {
                                         alt={`Past photo ${i}`}
                                         fill
                                         className="object-cover"
-                                        sizes="(max-width: 768px) 100vw, 200px"
+                                        sizes="(min-width: 768px) 33vw, 200px"
                                     />
                                 </div>
                             ))}
                         </div>
                     </div>
-                );
+                )
+            }
 
             default:
                 return null;
