@@ -47,7 +47,7 @@ const Navbar = () => {
   const middleItems = navItems.filter(i => i.name !== "Home" && i.name !== authItem.name);
 
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] md:w-auto">
+    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] md:w-auto z-500">
       <nav className={`
         bg-black/40 backdrop-blur-xl border border-white/10 px-4 py-3 
         shadow-[0_8px_32px_0_rgba(0,0,0,0.36)]
