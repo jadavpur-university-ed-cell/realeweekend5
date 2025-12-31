@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { ChevronDown, Phone, CheckCircle, AlertCircle, Users, Plus, ArrowRight, Copy, User as UserIcon, RefreshCw } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { EVENTS_DATA } from '@/assets/eventData';
 
@@ -14,10 +14,13 @@ interface TeamDetails {
     members: { _id: string; name: string }[];
 }
 
-export default function EventsPage() {
+// 1. The Inner Component containing all the logic
+function EventsContent() {
     const router = useRouter();
-    
-    const [activeTab, setActiveTab] = useState<EventName>('PitchGenix');
+    const searchParams = useSearchParams();
+    const initialTab = searchParams.get('tab');
+
+    const [activeTab, setActiveTab] = useState<EventName>((initialTab as EventName) || 'PitchGenix');
     const [openFaq, setOpenFaq] = useState<number | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [registeredEvents, setRegisteredEvents] = useState<string[]>([]);
@@ -73,6 +76,12 @@ export default function EventsPage() {
         fetchUser();
     }, [fetchUser]);
 
+    useEffect(() => {
+        if (initialTab) {
+            setActiveTab(initialTab as EventName);
+        }
+    }, [initialTab]);
+
     const handleRegister = async () => {
         if (!isLoggedIn) { router.push('/login'); return; }
         setLoading(true);
@@ -103,12 +112,12 @@ export default function EventsPage() {
 
         setLoading(true);
         const endpoint = teamMode === 'create' ? '/api/events/create-team' : '/api/events/join-team';
-        
+
         try {
             const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     eventName: activeTab,
                     teamName: teamMode === 'create' ? teamName : undefined,
                     joinCode: teamMode === 'join' ? teamCodeInput : undefined
@@ -141,10 +150,10 @@ export default function EventsPage() {
     const isRegistered = registeredEvents.includes(activeTab);
 
     return (
-        <div 
+        <div
             className="min-h-screen relative font-sans text-slate-200"
             style={{
-                backgroundImage: "url('/bg/board.png')", 
+                backgroundImage: "url('/bg/board.png')",
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundAttachment: 'fixed',
@@ -156,9 +165,7 @@ export default function EventsPage() {
             <div className="relative z-10 max-w-5xl mx-auto px-4 py-10">
 
                 <div className="mt-20 text-center mb-8">
-                    {/* Softer White Title */}
                     <h1 className="text-4xl font-bold text-slate-100 mb-2">Events Arena</h1>
-                    {/* Soothing Slate-400 for subtitles */}
                     <p className="text-slate-400">Select an event to register and view details</p>
                 </div>
 
@@ -168,11 +175,10 @@ export default function EventsPage() {
                         <button
                             key={name}
                             onClick={() => setActiveTab(name)}
-                            className={`px-5 py-2 rounded-lg font-semibold text-sm transition-colors ${
-                                activeTab === name
-                                ? 'bg-teal-600 text-slate-50 shadow-md'
-                                : 'bg-[#1e293b] text-slate-400 hover:bg-[#2d3b52] hover:text-slate-200'
-                            }`}
+                            className={`px-5 py-2 rounded-lg font-semibold text-sm transition-colors ${activeTab === name
+                                    ? 'bg-teal-600 text-slate-50 shadow-md'
+                                    : 'bg-[#1e293b] text-slate-400 hover:bg-[#2d3b52] hover:text-slate-200'
+                                }`}
                         >
                             {name}
                         </button>
@@ -180,17 +186,17 @@ export default function EventsPage() {
                 </div>
 
                 <div className="bg-[#1e293b] rounded-xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-gray-700">
-                    
+
                     {/* Left: Content */}
                     <div className="md:w-2/3 p-6 md:p-8">
-                        
+
                         <div className="flex items-center gap-5 mb-6">
-                            <Image 
-                                src={currentEvent.logo || '/logo/placeholder.png'} 
+                            <Image
+                                src={currentEvent.logo || '/logo/placeholder.png'}
                                 height={100}
                                 width={300}
-                                className="object-cover rounded-lg" 
-                                alt={`${activeTab} logo`} 
+                                className="object-cover rounded-lg"
+                                alt={`${activeTab} logo`}
                             />
                             <div>
                                 <h2 className="text-2xl font-bold text-slate-100 mb-1">{activeTab}</h2>
@@ -201,7 +207,6 @@ export default function EventsPage() {
                         </div>
 
                         <div className="mb-8">
-                            {/* Soothing Slate-300 for main body text (easier to read than gray) */}
                             <p className="text-slate-300 text-base leading-relaxed">
                                 {currentEvent.description}
                             </p>
@@ -240,18 +245,18 @@ export default function EventsPage() {
                                                                 {teamDetails.name}
                                                             </h3>
                                                         </div>
-                                                        
+
                                                         <div className="w-full sm:w-auto bg-[#0f172a] p-2 rounded border border-teal-900/50 flex items-center justify-between gap-3">
                                                             <div>
                                                                 <p className="text-[10px] text-teal-500 uppercase font-bold">Team Code</p>
                                                                 <p className="text-lg font-mono font-bold text-slate-200 tracking-widest select-all">{teamDetails.teamCode}</p>
                                                             </div>
-                                                            <button 
+                                                            <button
                                                                 onClick={() => copyToClipboard(teamDetails.teamCode)}
                                                                 className="p-2 hover:bg-gray-700 rounded text-slate-400 hover:text-white transition-colors"
                                                                 title="Copy Code"
                                                             >
-                                                                <Copy size={16}/>
+                                                                <Copy size={16} />
                                                             </button>
                                                         </div>
                                                     </div>
@@ -273,8 +278,8 @@ export default function EventsPage() {
                                             ) : (
                                                 <div className="flex flex-col items-center justify-center py-6 text-center">
                                                     <p className="text-slate-400 text-sm mb-3">Loading team details...</p>
-                                                    <button 
-                                                        onClick={fetchTeamData} 
+                                                    <button
+                                                        onClick={fetchTeamData}
                                                         className="flex items-center gap-2 text-teal-400 text-xs hover:underline"
                                                     >
                                                         <RefreshCw size={12} /> Reload
@@ -287,24 +292,24 @@ export default function EventsPage() {
                             ) : activeTab === 'PitchGenix' ? (
                                 <div>
                                     <h4 className="flex items-center gap-2 text-slate-200 font-bold mb-4 text-sm uppercase tracking-wide">
-                                        <Users className="text-teal-500" size={18}/> 
+                                        <Users className="text-teal-500" size={18} />
                                         Team Registration
                                     </h4>
-                                    
+
                                     {!teamMode ? (
                                         <div className="flex gap-3">
-                                            <button 
+                                            <button
                                                 onClick={() => setTeamMode('create')}
                                                 className="flex-1 py-3 px-4 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg text-slate-300 text-sm font-medium transition-colors flex flex-col items-center gap-1"
                                             >
-                                                <Plus size={18} className="text-teal-500"/>
+                                                <Plus size={18} className="text-teal-500" />
                                                 Create Team
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={() => setTeamMode('join')}
                                                 className="flex-1 py-3 px-4 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg text-slate-300 text-sm font-medium transition-colors flex flex-col items-center gap-1"
                                             >
-                                                <Users size={18} className="text-blue-500"/>
+                                                <Users size={18} className="text-blue-500" />
                                                 Join Team
                                             </button>
                                         </div>
@@ -314,14 +319,14 @@ export default function EventsPage() {
                                                 {teamMode === 'create' ? "Team Name" : "Team Code"}
                                             </label>
                                             <div className="flex gap-2">
-                                                <input 
-                                                    type="text" 
+                                                <input
+                                                    type="text"
                                                     className="flex-1 px-3 py-2 bg-gray-900 border border-gray-600 rounded focus:border-teal-500 focus:outline-none text-slate-200 placeholder-slate-500 text-sm"
                                                     placeholder={teamMode === 'create' ? "Name..." : "Code..."}
                                                     value={teamMode === 'create' ? teamName : teamCodeInput}
                                                     onChange={(e) => teamMode === 'create' ? setTeamName(e.target.value) : setTeamCodeInput(e.target.value)}
                                                 />
-                                                <button 
+                                                <button
                                                     onClick={handleTeamSubmit}
                                                     disabled={loading}
                                                     className="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded text-sm font-bold disabled:opacity-50"
@@ -329,7 +334,7 @@ export default function EventsPage() {
                                                     {loading ? '...' : <ArrowRight size={18} />}
                                                 </button>
                                             </div>
-                                            <button 
+                                            <button
                                                 onClick={() => setTeamMode(null)}
                                                 className="text-xs text-slate-500 hover:text-slate-300 mt-2 underline"
                                             >
@@ -397,5 +402,18 @@ export default function EventsPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+// 2. The Default Export wrapped in Suspense
+export default function EventsPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#014d4e] flex items-center justify-center text-white">
+                Loading Events...
+            </div>
+        }>
+            <EventsContent />
+        </Suspense>
     );
 }

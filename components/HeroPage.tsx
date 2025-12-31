@@ -226,10 +226,11 @@ const UIOverlay = () => {
                                         {/* Button - Compact */}
                                         <div>
                                             <Link
-                                                href="/events"
+                                                // Change this line: pass the event ID or Name in the URL
+                                                href={`/events?tab=${encodeURIComponent(item.name)}`}
                                                 className={`w-full py-1.5 px-3 rounded text-center block
-                                    font-semibold text-xs text-white transition-transform active:scale-95
-                                    ${eventDetails.color || 'bg-blue-600'} hover:opacity-90`}
+                                                            font-semibold text-xs text-white transition-transform active:scale-95
+                                                            ${eventDetails.color || 'bg-blue-600'} hover:opacity-90`}
                                             >
                                                 View Details
                                             </Link>
