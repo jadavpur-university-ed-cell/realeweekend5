@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { ChevronDown, Phone, CheckCircle, AlertCircle, Users, Plus, ArrowRight, Copy, User as UserIcon, RefreshCw } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { EVENTS_DATA } from '@/assets/eventData';
-import { useSearchParams } from 'next/navigation';
 
 type EventName = keyof typeof EVENTS_DATA;
 
@@ -15,7 +14,8 @@ interface TeamDetails {
     members: { _id: string; name: string }[];
 }
 
-export default function EventsPage() {
+// 1. The Inner Component containing all the logic
+function EventsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const initialTab = searchParams.get('tab');
@@ -165,9 +165,7 @@ export default function EventsPage() {
             <div className="relative z-10 max-w-5xl mx-auto px-4 py-10">
 
                 <div className="mt-20 text-center mb-8">
-                    {/* Softer White Title */}
                     <h1 className="text-4xl font-bold text-slate-100 mb-2">Events Arena</h1>
-                    {/* Soothing Slate-400 for subtitles */}
                     <p className="text-slate-400">Select an event to register and view details</p>
                 </div>
 
@@ -209,7 +207,6 @@ export default function EventsPage() {
                         </div>
 
                         <div className="mb-8">
-                            {/* Soothing Slate-300 for main body text (easier to read than gray) */}
                             <p className="text-slate-300 text-base leading-relaxed">
                                 {currentEvent.description}
                             </p>
@@ -405,5 +402,18 @@ export default function EventsPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+// 2. The Default Export wrapped in Suspense
+export default function EventsPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#014d4e] flex items-center justify-center text-white">
+                Loading Events...
+            </div>
+        }>
+            <EventsContent />
+        </Suspense>
     );
 }
