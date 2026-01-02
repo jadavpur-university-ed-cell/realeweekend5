@@ -125,9 +125,9 @@ export default function Login() {
             </button>
 
             <div className="text-center mt-4">
-              <a href="#" className="text-sm text-teal-100 hover:text-white hover:underline transition-colors">
+              {/* <a href="#" className="text-sm text-teal-100 hover:text-white hover:underline transition-colors">
                 Forgot Password?
-              </a>
+              </a> */}
             </div>
             <div className="text-center mt-4 text-sm text-teal-100 hover:text-white transition-colors">
               Not Yet Registered? &nbsp;
