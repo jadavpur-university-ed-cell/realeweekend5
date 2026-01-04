@@ -95,7 +95,7 @@ export const EVENTS_DATA = {
             },
             {
                 q: "When are the Prelims? What is the format?",
-                a: "4th January, from 8:30 PM to 9:30 PM. Individual participation. 20 questions. Duration: 30 minutes once started (quiz must be completed within given timeline).",
+                a: "6th January, from 9:30 PM to 12:00 AM. Individual participation. 20 questions. Duration: 30 minutes once started (quiz must be completed within given timeline).",
             },
             {
                 q: "What topics will be covered in Prelims?",
