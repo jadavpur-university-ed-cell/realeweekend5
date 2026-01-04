@@ -23,7 +23,6 @@ export async function POST(
     const quiz = await Quiz.findOne({ slug: slug });
     if (!quiz) return NextResponse.json({ error: "Quiz not found" }, { status: 404 });
 
-    // Find the open submission
     const submission = await Submission.findOne({
       userId: decoded.userId,
       quizId: quiz._id
@@ -32,28 +31,46 @@ export async function POST(
     if (!submission) return NextResponse.json({ error: "No active submission found" }, { status: 400 });
     if (submission.submittedAt) return NextResponse.json({ error: "Already submitted" }, { status: 400 });
 
-    // Calculate Score
+    // --- SCORING LOGIC FIX ---
     let score = 0;
+    
+    // Debug: See what is coming in
+    console.log("Incoming Answers:", answers); 
+
     quiz.questions.forEach((q: any) => {
-      const userAns = answers[q._id]; // User selected option
-      if (userAns && userAns === q.correctAnswer) {
+      // 1. CRITICAL: Convert ObjectId to String for lookup
+      const questionId = q._id.toString(); 
+      
+      // 2. Lookup user answer safely
+      const userAns = answers[questionId]; 
+      
+      // 3. Trim whitespace just in case (optional but recommended)
+      const cleanUserAns = userAns ? userAns.trim() : null;
+      const cleanCorrectAns = q.correctAnswer ? q.correctAnswer.trim() : null;
+
+      // Debug: Log comparisons to server console to verify match
+      console.log(`QID: ${questionId} | User: ${cleanUserAns} | Correct: ${cleanCorrectAns} | Match: ${cleanUserAns === cleanCorrectAns}`);
+
+      if (cleanUserAns && cleanUserAns === cleanCorrectAns) {
         score += 1;
       }
     });
 
+    console.log(`Final Score Calculated: ${score}/${quiz.questions.length}`);
+
     // Update Submission
     submission.answers = answers;
-    submission.score = score;
+    submission.score = score; // This should now save correctly
     submission.tabSwitches = tabSwitches;
     submission.submittedAt = new Date();
-    submission.isFlagged = tabSwitches >= 3; // Flag if they cheated
+    submission.isFlagged = tabSwitches >= 3;
 
     await submission.save();
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, score }); // Return score to frontend for verification
 
   } catch (error) {
-    console.error(error);
+    console.error("Submit Error:", error);
     return NextResponse.json({ error: "Server Error" }, { status: 500 });
   }
 }

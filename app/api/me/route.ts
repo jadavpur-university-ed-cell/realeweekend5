@@ -22,6 +22,7 @@ export async function GET(req: Request) {
     
     // We explicitly exclude the password field for security
     const user = await User.findById(decoded.userId).select('-password');
+    // console.log(user);
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });

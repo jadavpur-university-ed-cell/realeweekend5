@@ -24,6 +24,7 @@ const QuestionSchema = new Schema({
   text: { type: String, required: true },
   options: [{ type: String, required: true }],
   correctAnswer: { type: String, required: true }, // Crucial: Never sent to frontend
+  image: { type: String, required: false }
 });
 
 const QuizSchema = new Schema<IQuiz>({
@@ -42,6 +43,7 @@ const QuizSchema = new Schema<IQuiz>({
 export interface ISubmission extends Document {
   userId: string;         // Reference to your User model (ID or Email)
   quizId: mongoose.Types.ObjectId;
+  quizTitle: { type: String },
   startedAt: Date;
   submittedAt?: Date;
   answers: Map<string, string>; // Map of QuestionID -> UserOption
