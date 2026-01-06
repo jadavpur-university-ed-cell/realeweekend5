@@ -194,7 +194,7 @@ export default function QuizRunner({ params }: { params: Promise<{ slug: string 
     <div className="min-h-screen bg-black text-white selection:bg-none flex flex-col" onContextMenu={(e) => e.preventDefault()}>
 
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 right-0 h-25 bg-gray-900 border-b border-white/10 flex items-center justify-between px-6 z-50">
+      <div className="fixed top-0 left-0 right-0 h-25 bg-gray-900 border-b border-white/10 flex items-center justify-between px-6 z-500">
         <div className="font-bold text-lg tracking-wide text-gray-200">{slug.toUpperCase()} PRELIMS</div>
         <div className={`font-mono text-xl font-bold px-4 py-1 rounded border ${timeLeft < 300 ? 'bg-red-900/20 border-red-500 text-red-500 animate-pulse' : 'bg-black border-blue-500 text-blue-400'}`}>
           {formatTime(timeLeft)}
