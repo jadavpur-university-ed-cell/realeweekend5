@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback, use } from "react";
+import { useEffect, useState, useCallback, use, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, AlertCircle, CheckCircle2, ChevronLeft, ChevronRight, LayoutGrid } from "lucide-react";
 
@@ -21,8 +21,14 @@ export default function QuizRunner({ params }: { params: Promise<{ slug: string 
   const [tabSwitches, setTabSwitches] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // NEW: Track which question is visible
+  // Track which question is visible
   const [currentQIndex, setCurrentQIndex] = useState(0);
+
+  // ------------------------------------------------------------------
+  // FIX: Create a Ref to hold the latest version of handleSubmit
+  // This allows the timer to call the latest function without resetting the interval
+  // ------------------------------------------------------------------
+  const handleSubmitRef = useRef<((auto?: boolean) => Promise<void>) | null>(null);
 
   // 1. Initialize Quiz
   useEffect(() => {
@@ -55,45 +61,12 @@ export default function QuizRunner({ params }: { params: Promise<{ slug: string 
     if (slug) startQuiz();
   }, [slug]);
 
-  // 2. Timer Hook (Unchanged)
-  useEffect(() => {
-    if (status !== "ACTIVE") return;
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          handleSubmit(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [status]);
-
-  // 3. Anti-Cheat Hook (Unchanged)
-  useEffect(() => {
-    if (status !== "ACTIVE") return;
-    const handleVisibility = () => {
-      if (document.hidden) {
-        setTabSwitches((prev) => {
-          const newCount = prev + 1;
-          if (newCount >= 3) {
-            alert("Maximum tab switches exceeded. Submitting test.");
-            handleSubmit(true);
-          } else {
-            alert(`WARNING: Don't switch tabs! (${newCount}/3 warnings)`);
-          }
-          return newCount;
-        });
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-    return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, [status]);
-
-  // 4. Submit Logic
+  // 2. Submit Logic
+  // This recreates whenever 'answers' changes
   const handleSubmit = useCallback(async (auto = false) => {
+    // If we are already submitting, stop double submissions
+    if (status === "SUBMITTED") return;
+
     setStatus("SUBMITTED");
     if (document.fullscreenElement) document.exitFullscreen();
 
@@ -101,14 +74,76 @@ export default function QuizRunner({ params }: { params: Promise<{ slug: string 
       await fetch(`/api/quiz/${slug}/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        // Because this function is recreated when 'answers' changes,
+        // this JSON.stringify will always contain the latest answers
         body: JSON.stringify({ answers, tabSwitches, autoSubmitted: auto }),
       });
       setTimeout(() => router.push("/prelims/dashboard"), 3000);
     } catch (e) {
       console.error("Submit failed", e);
     }
-  }, [answers, tabSwitches, slug, router]);
+  }, [answers, tabSwitches, slug, router, status]);
 
+  // ------------------------------------------------------------------
+  // FIX: Sync the Ref immediately whenever handleSubmit updates
+  // ------------------------------------------------------------------
+  useEffect(() => {
+    handleSubmitRef.current = handleSubmit;
+  }, [handleSubmit]);
+
+
+  // 3. Timer Hook
+  useEffect(() => {
+    if (status !== "ACTIVE") return;
+    
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          
+          // FIX: Call the function via the Ref
+          // This accesses the closure with the FILLED answers, not the empty ones
+          if (handleSubmitRef.current) {
+             handleSubmitRef.current(true);
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [status]); // We do NOT add handleSubmit to dependencies (prevents timer stutter)
+
+
+  // 4. Anti-Cheat Hook
+  useEffect(() => {
+    if (status !== "ACTIVE") return;
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        setTabSwitches((prev) => {
+          const newCount = prev + 1;
+          if (newCount >= 3) {
+            alert("Maximum tab switches exceeded. Submitting test.");
+            
+            // FIX: Use the Ref here too, just in case
+            if (handleSubmitRef.current) {
+                handleSubmitRef.current(true);
+            }
+          } else {
+            alert(`WARNING: Don't switch tabs! (${newCount}/3 warnings)`);
+          }
+          return newCount;
+        });
+      }
+    };
+    
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [status]);
+
+
+  // Helper to format time
   const formatTime = (s: number) => {
     const mins = Math.floor(s / 60);
     const secs = s % 60;
@@ -159,7 +194,7 @@ export default function QuizRunner({ params }: { params: Promise<{ slug: string 
     <div className="min-h-screen bg-black text-white selection:bg-none flex flex-col" onContextMenu={(e) => e.preventDefault()}>
 
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 right-0 h-25 bg-gray-900 border-b border-white/10 flex items-center justify-between px-6 z-500">
+      <div className="fixed top-0 left-0 right-0 h-25 bg-gray-900 border-b border-white/10 flex items-center justify-between px-6 z-50">
         <div className="font-bold text-lg tracking-wide text-gray-200">{slug.toUpperCase()} PRELIMS</div>
         <div className={`font-mono text-xl font-bold px-4 py-1 rounded border ${timeLeft < 300 ? 'bg-red-900/20 border-red-500 text-red-500 animate-pulse' : 'bg-black border-blue-500 text-blue-400'}`}>
           {formatTime(timeLeft)}
@@ -190,7 +225,7 @@ export default function QuizRunner({ params }: { params: Promise<{ slug: string 
                   <label
                     key={option}
                     className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all duration-200 group
-                                    ${answers[currentQ._id] === option
+                                  ${answers[currentQ._id] === option
                         ? "bg-blue-600/20 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]"
                         : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"
                       }
