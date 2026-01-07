@@ -95,7 +95,7 @@ export const EVENTS_DATA = {
             },
             {
                 q: "When are the Prelims? What is the format?",
-                a: "6th January, from 9:30 PM to 12:00 AM. Individual participation. 20 questions. Duration: 30 minutes once started (quiz must be completed within given timeline).",
+                a: "6th January, from 9:30 PM to 10:00 AM 7th January. Individual participation. 20 questions. Duration: 30 minutes once started (quiz must be completed within given timeline).",
             },
             {
                 q: "What topics will be covered in Prelims?",
@@ -103,15 +103,15 @@ export const EVENTS_DATA = {
             },
             {
                 q: "How many participants qualify for the Final and how are teams formed?",
-                a: "Top 40 participants from the prelims will be selected. The shortlisted participants will be randomly grouped into 10 teams, with 4 members in each team.",
+                a: "Top 30 participants from the prelims will be selected. The shortlisted participants will be randomly grouped into 10 teams, with 3 members in each team.",
             },
             {
                 q: "When will the shortlisted list be released?",
-                a: "On 6th January.",
+                a: "On 7th January.",
             },
             {
                 q: "When will the Final case be released?",
-                a: "The final round case will be released on 6th January.",
+                a: "The final round case will be released on 7th January.",
             },
             {
                 q: "When is the Final round?",
