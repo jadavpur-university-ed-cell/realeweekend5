@@ -400,7 +400,7 @@ export default function AdminDashboard({ allUsers, allTeams = [] }: AdminDashboa
                                             <th className="px-6 py-4">Candidate</th>
                                             <th className="px-6 py-4">Score</th>
                                             <th className="px-6 py-4">Time Taken</th>
-                                            <th className="px-6 py-4">Flags</th>
+                                            <th className="px-6 py-4">Tab Switches</th>
                                             <th className="px-6 py-4">Submitted At</th>
                                         </tr>
                                     </thead>
@@ -424,9 +424,9 @@ export default function AdminDashboard({ allUsers, allTeams = [] }: AdminDashboa
                                                         {formatTime(sub.timeTaken)}
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        {sub.isFlagged ? (
+                                                        {sub.tabSwitches > 0 ? (
                                                             <div className="flex items-center gap-1 text-red-600 font-bold text-xs">
-                                                                <AlertTriangle size={14} /> FLAGGED ({sub.tabSwitches})
+                                                                <AlertTriangle size={14} /> ({sub.tabSwitches})
                                                             </div>
                                                         ) : (
                                                             <span className="text-green-600 text-xs flex items-center gap-1">
